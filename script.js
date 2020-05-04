@@ -44,7 +44,7 @@ function rangeSlider() {
 };
 
 document.getElementById('titel').onclick = function () {
-	document.getElementById('bottomNav').innerHTML += ":) ";
+    window.location.href = "https://nilslambertz.github.io";
 }
 
 document.getElementById('explosionSort').onclick = function () {
