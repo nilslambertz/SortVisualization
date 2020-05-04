@@ -1,0 +1,191 @@
+html, body {
+    margin: 0px;
+    padding: 0px;
+    height: 100%;
+    width: 100%;
+}
+
+#topNav {
+    background: linear-gradient(to right, #4169E1, #1C86EE);
+    border-bottom: 1px solid white;
+    height: 50px;
+    width: 100%;
+    color: white;
+    font-size: 30px;
+    font-family: Arial;
+    cursor: default;
+    line-height: 50px;
+    overflow: auto;
+	white-space: nowrap;
+
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -moz-user-select: none; 
+    -ms-user-select: none; 
+    user-select: none;
+}
+
+#leftNav {
+    background: linear-gradient(to bottom, #4169E1, #1C86EE);
+    height: calc(100% - 102px);
+    border-right: 1px solid white;
+    width: 250px;
+    color: white;
+    font-size: 30px;
+    font-family: Arial;
+    cursor: default;
+    line-height: 50px;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    float: left;
+}
+
+
+#bottomNav {
+    background: linear-gradient(to left, #4169E1, #1C86EE);
+    border-top: 1px solid white;
+    height: 50px;
+    padding-left: 10px;
+    width: calc(100% - 10px);
+    color: white;
+    font-size: 30px;
+    font-family: Arial;
+    cursor: default;
+    line-height: 50px;
+    overflow: auto;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+#content {
+    height: calc(100% - 122px);
+    width: calc(100% - 291px);
+    background: linear-gradient(to bottom right, #E5E5E5, #B5B5B5);
+    text-align: center;
+    padding: 20px;
+	padding-top: 0px;
+    overflow: auto;
+	white-space: nowrap;
+    float: left;
+	box-shadow: 0px 0px 20px 5px #8C8C8C inset;
+}
+
+#titel {
+    float: left;
+    width: 250px;
+    text-align: center;
+    color: black;
+    background-color: #4169E1;
+    border-right: 1px solid white;
+}
+
+.navElem {
+    border-right: 1px solid white;
+    line-height: 50px;
+    height: 50px;
+    padding-right: 10px;
+    cursor: pointer;
+    display: inline-block;
+    transition: background-color 0.25s, opacity 0.4s;
+}
+
+#elemSliderDiv {
+    padding-left: 10px;
+    width: 330px;
+    cursor: default;
+}
+
+#speedSliderDiv {
+    cursor: default;
+}
+
+.leftNavElem {
+    width: 100%;
+    text-align: center;
+    line-height: 70px;
+    font-size: 20px;
+    color: black;
+    height: 70px;
+    cursor: pointer;
+    transition: background-color 0.25s, opacity 0.4s;
+}
+
+    .leftNavElem:hover {
+        background-color: #4876FF;
+        transition: background-color 0.25s;
+    }
+
+#bubbleSortDiv {
+    text-decoration: underline;
+}
+
+#sortDiv {
+    font-size: 30px;
+    border-bottom: 1px solid white;
+    transition: background-color 0.4s, font-size 0.4s;
+}
+
+    #sortDiv:hover {
+        transition: background-color 0.4s, font-size 0.4s;
+    }
+
+.notSorting {
+    background-color: #228B22;
+}
+
+    .notSorting:hover {
+        background-color: #32CD32;
+    }
+
+.sorting {
+    background-color: #FF8C00;
+}
+
+    .sorting:hover {
+        background-color: #FFB90F;
+    }
+	
+.sorted {
+	background-color: #A8A8A8;
+}
+
+	.sorted:hover {
+		background-color: #A8A8A8;
+	}
+
+
+/* The slider itself */
+.slider {
+    -webkit-appearance: none; /* Override default CSS styles */
+    height: 5px; /* Specified height */
+    background: #d3d3d3; /* Grey background */
+    border-radius: 5px;
+    outline: none; /* Remove outline */
+    opacity: 1; /* Set transparency (for mouse-over effects on hover) */
+    -webkit-transition: .2s; /* 0.2 seconds transition on hover */
+    transition: opacity .2s;
+    padding: 0;
+    margin: 0;
+    cursor: default;
+}
+
+    /* Mouse-over effects 
+    .slider:hover {
+        opacity: 1;  Fully shown on mouse-over 
+    }*/
+
+    /* The slider handle (use -webkit- (Chrome, Opera, Safari, Edge) and -moz- (Firefox) to override default look) */
+    .slider::-webkit-slider-thumb {
+        -webkit-appearance: none; /* Override default look */
+        width: 25px; /* Set a specific slider handle width */
+        border-radius: 25px;
+        height: 25px; /* Slider handle height */
+        background: #4CAF50; /* Green background */
+        /*cursor: pointer; Cursor on hover */
+    }
