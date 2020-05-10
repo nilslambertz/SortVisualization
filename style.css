@@ -3,6 +3,8 @@ html, body {
     padding: 0px;
     height: 100%;
     width: 100%;
+    font-family: Arial;
+    font-family: 'Roboto', sans-serif;
 }
 
 #topNav {
@@ -12,7 +14,6 @@ html, body {
     width: 100%;
     color: white;
     font-size: 30px;
-    font-family: Arial;
     cursor: default;
     line-height: 50px;
     overflow: auto;
@@ -30,9 +31,9 @@ html, body {
     height: calc(100% - 102px);
     border-right: 1px solid white;
     width: 250px;
-    color: white;
+    color: black;
     font-size: 30px;
-    font-family: Arial;
+    font-weight: bold;
     cursor: default;
     line-height: 50px;
     -webkit-touch-callout: none;
@@ -66,6 +67,7 @@ html, body {
 #content {
     height: calc(100% - 122px);
     width: calc(100% - 291px);
+    background: #E5E5E5;
     background: linear-gradient(to bottom right, #E5E5E5, #B5B5B5);
     text-align: center;
     padding: 20px;
@@ -81,6 +83,7 @@ html, body {
     width: 250px;
     text-align: center;
     color: black;
+    font-weight: bold;
     background-color: #4169E1;
     border-right: 1px solid white;
 }
@@ -110,7 +113,6 @@ html, body {
     text-align: center;
     line-height: 70px;
     font-size: 20px;
-    color: black;
     height: 70px;
     cursor: pointer;
     transition: background-color 0.25s, opacity 0.4s;

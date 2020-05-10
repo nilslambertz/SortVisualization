@@ -1,33 +1,48 @@
-// variables
-var array; // main array
-var hilfsArray; // array used to first sort and save the changes/swaps made
-var divs; // array with all the divs which represent the elements of 'array'
-var sorting = false; // is the animation currently playing
-var stop = false; // is the stop button currently pressed
-var swapCreated = false; // has the sort been done by the chosen algorithm
-var changed = []; // array e.g. for bubblesort, which shows all swaps in current iteration
-var swap = []; // all swaps that have been done for the sorting are in here, saved as arrays
-var save = []; // if you need two steps for an animation, the needed information is stored here
-var test = 0; // saves last looked at index
-var width = 10; // width of the divs
-var margin = 7; // margin between the divs
-var round = 3; // amout of rounding the corners
-var algoNumber = 0; // which algorithm is chosen, 0 = bubbleSort, 1 = mergeSort, 2 = insertionSort, 3 = quickSort
-var maxNumber = 600; // highest number that can appear in the array (is also the max height of the divs)
-var schritt = 0; // for two-step-animations, it saves if we are in the first or second step
-var time = 0; // used to save the time it took to sort
-var fail = false; // if something went wrong, the animation stops
+// arrays of the animation
+let array = []; // main array
+let secondArray = []; // array used to first sort and save the changes/swaps made
+let divs = []; // array with all the divs which represent the elements of 'array'
+
+// variables which define the current state
+let sorting = false; // is the animation currently playing
+let stop = false; // is the stop button currently pressed
+let swapCreated = false; // has the sort been done by the chosen algorithm
+let algorithmNumber = 0; // which algorithm is chosen, 0 = bubbleSort, 1 = mergeSort, 2 = insertionSort, 3 = quickSort
+let currentStep = 0; // for two-step-animations, it saves if we are in the first or second step
+let time = 0; // used to save the time it took to sort
+
+// arrays for storing temporal data
+let changed = []; // array e.g. for bubblesort, which shows all swaps in current iteration
+let swap = []; // all swaps that have been done for the sorting are in here, saved as arrays
+let save = []; // if you need two steps for an animation, the needed information is stored here
+
+// style of the divs representing the elements
+let width = 10; // width of the divs
+let margin = 7; // margin between the divs
+let round = 3; // amout of rounding the corners
+
+// variables concerning the array-range
+const minNumber = 10; // smallest possible element in the array (min height of the divs)
+const maxNumber = 600; // biggest possible element in the array (max height of the divs)
+
+// colors
+const sortedColor = "#228B22";
+const normalColor = "#7D7D7D";
+const firstHighlightColor = "#FFA54F";
+const secondHighlightColor = "#EE7621";
+const firstCompareColor = "#4169E1";
+const secondCompareColor = "#00B2EE";
+const thirdHighlightColor = "#EE4000";
 
 // Initialize Sliders
-range = $('#anzahlSlider');
+range = $('#elemSlider');
 value = $('#sliderValue');
 speed = $('#speedSlider');
 
-// setting defaults
-
+// initializing site
 rangeSlider();
 var interval = 0;
-createArray(parseInt(document.getElementById("anzahlSlider").value));
+createArray(parseInt(document.getElementById("elemSlider").value));
 var interval = parseInt(document.getElementById("speedSlider").value);
 
 // 
@@ -57,8 +72,8 @@ document.getElementById('explosionSort').onclick = function () {
 }
 
 document.getElementById('sortDiv').onclick = function (e) {
-	// copy 'array' to 'hilfsArray'
-    hilfsArray = array.slice(0);
+	// copy 'array' to 'secondArray'
+    secondArray = array.slice(0);
 	
 	// update interval
     interval = parseInt(document.getElementById("speedSlider").max) - parseInt(document.getElementById("speedSlider").value);
@@ -78,13 +93,13 @@ document.getElementById('sortDiv').onclick = function (e) {
     } else {
 		// currently not sorting
 	
-		// if sort hasn't been done, sort 'hilfsArray' and save the steps to 'swap' 
+		// if sort hasn't been done, sort 'secondArray' and save the steps to 'swap'
         if (!swapCreated) {
             swap = [];
             time = 0;
             var startTime = 0;
             var endTime = 0;
-            switch (algoNumber) {
+            switch (algorithmNumber) {
 				// BubbleSort
                 case 0: {
                     startTime = performance.now();
@@ -107,7 +122,7 @@ document.getElementById('sortDiv').onclick = function (e) {
                     endTime = performance.now();
                     break;
                 }
-				// wrong algoNumber, return
+				// wrong algorithmNumber, return
                 default: {
                     alert("Not implemented (yet)");
 					return;
@@ -124,7 +139,7 @@ document.getElementById('sortDiv').onclick = function (e) {
         sorting = true;
 
 		// start animation for current algorithm
-        switch (algoNumber) {
+        switch (algorithmNumber) {
             case 0: {
                 bubbleSortAnimation();
                 break;
@@ -147,8 +162,8 @@ document.getElementById('sortDiv').onclick = function (e) {
 };
  
 document.getElementById('stepDiv').onclick = function (e) {
-	// copy 'array' to 'hilfsArray'
-    hilfsArray = array.slice(0);
+	// copy 'array' to 'secondArray'
+    secondArray = array.slice(0);
 	
 	// if currently sorting or already sorted, return
     if ((sorting && !stop) || checkSorted() == 0) {
@@ -156,7 +171,7 @@ document.getElementById('stepDiv').onclick = function (e) {
     }
 
 	// do one step with current algorithm
-    switch (algoNumber) { 
+    switch (algorithmNumber) {
         case 0: bubbleSortStepByStep(); break;
         case 1: mergeSortStepByStep(); break;
 		case 2: insertionSortStepByStep(); break;
@@ -175,39 +190,39 @@ document.getElementById('instantSortDiv').onclick = function () {
         return;
     }
 
-    hilfsArray = array.slice(0);
+    secondArray = array.slice(0);
     var startTime = 0;
     var endTime = 0;
     time = 0;
 	
-	// sort 'hilfsArray' and copy it into 'array'
-    switch (algoNumber) {
+	// sort 'secondArray' and copy it into 'array'
+    switch (algorithmNumber) {
         case 0: {
             startTime = performance.now();
             bubbleSort();
             endTime = performance.now();
-            array = hilfsArray.slice(0);
+            array = secondArray.slice(0);
             break;
         }
         case 1: {
             startTime = performance.now();
             mergeSort(0, array.length - 1);
             endTime = performance.now();
-            array = hilfsArray.slice(0);
+            array = secondArray.slice(0);
             break;
         }
         case 2: {
             startTime = performance.now();
             insertionSort();
             endTime = performance.now();
-            array = hilfsArray.slice(0);
+            array = secondArray.slice(0);
             break;
         }
 		case 3: {
 			startTime = performance.now();
             quickSort(0, array.length - 1);
             endTime = performance.now();
-            array = hilfsArray.slice(0);
+            array = secondArray.slice(0);
             break;
 		}
         default: {
@@ -231,15 +246,15 @@ document.getElementById('bubbleSortDiv').onclick = function () {
 	
     changed = [];
     swapCreated = false;
-	schritt = 0;
+    currentStep = 0;
     swap = [];
 	
-	// underline bubbleSort, change 'algoNumber' and draw the 'array'
+	// underline bubbleSort, change 'algorithmNumber' and draw the 'array'
     for (var i of document.getElementsByClassName("leftNavElem")) {
         i.style.textDecoration = "none";
     }
     document.getElementById("bubbleSortDiv").style.textDecoration = "underline";
-    algoNumber = 0;
+    algorithmNumber = 0;
     drawArray();
 }
 
@@ -251,15 +266,15 @@ document.getElementById('mergeSortDiv').onclick = function () {
 	
     changed = [];
     swapCreated = false;
-	schritt = 0;
+    currentStep = 0;
     swap = [];
 	
-	// underline mergeSort, change 'algoNumber' and draw the 'array'
+	// underline mergeSort, change 'algorithmNumber' and draw the 'array'
     for (var i of document.getElementsByClassName("leftNavElem")) {
         i.style.textDecoration = "none";
     }
     document.getElementById("mergeSortDiv").style.textDecoration = "underline";
-    algoNumber = 1;
+    algorithmNumber = 1;
     drawArray();
 }
 
@@ -271,15 +286,15 @@ document.getElementById('insertionSortDiv').onclick = function () {
 	
     changed = [];
     swapCreated = false;
-	schritt = 0;
+    currentStep = 0;
     swap = [];
 	
-	// underline insertionSort, change 'algoNumber' and draw the 'array'
+	// underline insertionSort, change 'algorithmNumber' and draw the 'array'
     for (var i of document.getElementsByClassName("leftNavElem")) {
         i.style.textDecoration = "none";
     }
     document.getElementById("insertionSortDiv").style.textDecoration = "underline";
-    algoNumber = 2;
+    algorithmNumber = 2;
     drawArray();
 }
 
@@ -291,15 +306,15 @@ document.getElementById("quickSortDiv").onclick = function() {
 	
     changed = [];
     swapCreated = false;
-	schritt = 0;
+    currentStep = 0;
     swap = [];
 	
-	// underline quickSort, change 'algoNumber' and draw the 'array'
+	// underline quickSort, change 'algorithmNumber' and draw the 'array'
     for (var i of document.getElementsByClassName("leftNavElem")) {
         i.style.textDecoration = "none";
     }
     document.getElementById("quickSortDiv").style.textDecoration = "underline";
-    algoNumber = 3;
+    algorithmNumber = 3;
     drawArray();
 }
 
@@ -321,7 +336,7 @@ document.getElementById('createArrayDiv').onclick = function (e) {
     }
 	
 	// create new array
-    var wert = document.getElementById("anzahlSlider").value;
+    var wert = document.getElementById("elemSlider").value;
     createArray(parseInt(wert));
 	
 	changeStyle(true);
@@ -331,15 +346,15 @@ document.getElementById('createArrayDiv').onclick = function (e) {
 // Bubblesort
 
 function bubbleSort() {
-    for (var n = hilfsArray.length; n > 1; n--) {
+    for (var n = secondArray.length; n > 1; n--) {
         for (var i = 0; i < n - 1; i++) {			
 			// schema: [firstIndex, secondIndex, tauschen]
 			// irgendwann mal ändern zu [ersterIndex, tauschen], da 'zweiterIndex' immer 'ersterIndex + 1'
             var a = [i, false];
-            if (hilfsArray[i] > hilfsArray[i + 1]) {
-                var temp = hilfsArray[i];
-                hilfsArray[i] = hilfsArray[i + 1];
-                hilfsArray[i + 1] = temp;
+            if (secondArray[i] > secondArray[i + 1]) {
+                var temp = secondArray[i];
+                secondArray[i] = secondArray[i + 1];
+                secondArray[i + 1] = temp;
                 a = [i, true];
             }
             swap.push(a);
@@ -354,10 +369,9 @@ function bubbleSort() {
 function bubbleSortAnimation() {
     var sortingInterval = setInterval(function () {
 		// if array is sorted or stop is pressed, make buttons visible and return
-        if (checkSorted() == 0 || stop || fail) {
+        if (checkSorted() == 0 || stop) {
             changeStyle(true);
             clearInterval(sortingInterval);
-			fail = false;
             return;
         }
 		
@@ -374,40 +388,38 @@ function bubbleSortStepByStep() {
     }
 
 	// if elements must not be swapped
-    if (schritt % 2 == 0) {
+    if (currentStep % 2 == 0) {
 		// get the next element
         var a = swap.pop();
 		
 		// if swap is empty, but the array still isn't sorted
 		if(a == null) {
 			alert("Something went wrong!");
-			fail = true;
 			return;
 		}
-		
         var firstIndex = a[0];
-        save[0] = firstIndex;
-		
-		// if next iteration
-        if (firstIndex < test) {
+
+        // if next iteration
+        if (firstIndex < save[0]) {
             changed = [];
         }
+
+        save[0] = firstIndex;
 		
         drawArray(a);
 		
-		// if elements must be swapped, swap them and increase 'schritt'
+		// if elements must be swapped, swap them and increase 'currentStep'
         if (a[1]) {
             var temp = array[firstIndex];
             array[firstIndex] = array[firstIndex+1];
             array[firstIndex+1] = temp;
-            test = firstIndex;
-            schritt++;
+            currentStep++;
         }
     } else {
 		// draw array with swapped elements and add the swapped element to 'changed'
         drawArray([save[0], save[0]+1]);
         changed.push(save[0]);
-        schritt++;
+        currentStep++;
     }
 
 	// if the array is sorted
@@ -428,20 +440,20 @@ function drawArrayBubbleSort(a) {
 
         if (a[0] == i) {
 			// highlight first index
-            farbe = "#4169E1";
+            farbe = firstCompareColor;
         } else {
             if (a[0]+1 == i) {
 				// highlight second index
-                farbe = "#00B2EE";
+                farbe = secondCompareColor;
             } else {
-				// every other element is grey
-                farbe = "#7D7D7D";
+				// every other element got the default color
+                farbe = normalColor;
             }
         }
 	
 		// if element has been swapped, highlight it with orange color
 		if (changed.includes(i)) {
-            farbe = "#FF8C00";
+            farbe = secondHighlightColor;
         }
         setDiv(div, wert, farbe, false);
     }
@@ -449,7 +461,7 @@ function drawArrayBubbleSort(a) {
 	// every already sorted element is green
     for (var i = sorted; i < array.length; i++) {
         document.getElementById('content').appendChild(divs[i]);
-        setDiv(divs[i], array[i], "#3CB371");
+        setDiv(divs[i], array[i], sortedColor);
     }
 }
 
@@ -463,10 +475,10 @@ function mergeSort(l, r) {
         if (r - l == 1) {
 			// schema: [firstIndex, secondIndex, needToBeSwapped, null, null, null, false]
             var a = [l, r, false, null, null, null, false];
-            if (hilfsArray[l] > hilfsArray[r]) {
-                var temp = hilfsArray[l];
-                hilfsArray[l] = hilfsArray[r];
-                hilfsArray[r] = temp;
+            if (secondArray[l] > secondArray[r]) {
+                var temp = secondArray[l];
+                secondArray[l] = secondArray[r];
+                secondArray[r] = temp;
                 a = [l, r, true, null, null, null, false];
             }
             swap.push(a);
@@ -488,20 +500,20 @@ function merge(l, r, mid) {
 		// schema: [firstIndex, SecondIndex, false, leftBorder, rightBorder, middle, moved];
         var a = [j, j-1, false, l, r, j+1, false];
 		// if smallest element of the second half is smaller than the biggest element of the first half
-        if (hilfsArray[j] < hilfsArray[j - 1]) {
+        if (secondArray[j] < secondArray[j - 1]) {
             var firstBigger = l;
 			// find first bigger element in the second half
             for (var x = l; x < j; x++) {
-                if (hilfsArray[x] > hilfsArray[j]) {
+                if (secondArray[x] > secondArray[j]) {
                     firstBigger = x;
                     break;
                 } 
             }
 			// move every element one place "to the right" and put the current element in the empty space
             for (var x = j; x > firstBigger; x--) {
-                var temp = hilfsArray[x];
-                hilfsArray[x] = hilfsArray[x - 1];
-                hilfsArray[x - 1] = temp;
+                var temp = secondArray[x];
+                secondArray[x] = secondArray[x - 1];
+                secondArray[x - 1] = temp;
             }
 			// now we moved the elements
             var a = [firstBigger, j, false, l, r, j+1, true];
@@ -534,7 +546,7 @@ function mergeSortStepByStep() {
         swapCreated = true;
     }
 	
-	if (schritt % 2 == 0) {
+	if (currentStep % 2 == 0) {
         var a = swap.pop();
         var firstIndex = a[0];
         var secondIndex = a[1];
@@ -560,7 +572,7 @@ function mergeSortStepByStep() {
         } else {
             drawArray([a[0], a[1], a[3], a[5], a[4]]);
             if (a[2]) {
-                schritt++;
+                currentStep++;
             }
 		}
     } else {
@@ -568,7 +580,7 @@ function mergeSortStepByStep() {
         array[save[0]] = array[save[1]];
         array[save[1]] = temp;
         drawArray([save[1], save[0], save[2], save[4], save[3]]);
-		schritt++;
+        currentStep++;
     }
 	
 		
@@ -580,10 +592,7 @@ function mergeSortStepByStep() {
 function drawArrayMergeSort(a) {
     var sorted = checkSorted();
     if(sorted == 0) {
-        for (var i = 0; i < array.length; i++) {
-            document.getElementById('content').appendChild(divs[i]);
-            setDiv(divs[i], array[i], "#3CB371");
-        }
+        drawArrayDefault();
         return;
     }
 
@@ -595,22 +604,22 @@ function drawArrayMergeSort(a) {
 		
 		if (a[2] != null) {
             if (a[2] <= i && i < a[3]) {
-				farbe = "#FFA54F";
+				farbe = firstHighlightColor;
             } else {
                 if (a[3] <= i && i <= a[4]) {
-                    farbe = "#EE7621";
+                    farbe = secondHighlightColor;
                 } else {
-                    farbe = "#7D7D7D";
+                    farbe = normalColor;
                 }
             }
         } else {
 			if (a[0] == i) {
-				farbe = "#4169E1";
+				farbe = firstCompareColor;
 			} else {
 				if (a[1] == i) {
-					farbe = "#00B2EE";
+					farbe = secondCompareColor;
 				} else {
-					farbe = "#7D7D7D";
+					farbe = normalColor;
 				}
 			}
         }
@@ -623,17 +632,17 @@ function drawArrayMergeSort(a) {
 // InsertionSort
 
 function insertionSort() {
-    for(var i = 0; i < hilfsArray.length; i++) {
+    for(var i = 0; i < secondArray.length; i++) {
 		swap.push([i]);
-        var temp = hilfsArray[i];
+        var temp = secondArray[i];
         var j = i;
 		// find correct position in the part of the array that is left from the current element and put it there
-        while(j > 0 && hilfsArray[j-1] > temp) {
-            hilfsArray[j] = hilfsArray[j-1];
+        while(j > 0 && secondArray[j-1] > temp) {
+            secondArray[j] = secondArray[j-1];
             j--;
         }
 		swap.push([i, j]);
-        hilfsArray[j] = temp;
+        secondArray[j] = temp;
     }
     swap = swap.reverse();
     swapCreated = true;
@@ -687,12 +696,12 @@ function drawArrayInsertionSort(a) {
         document.getElementById('content').appendChild(divs[i]);
 
         if (a[0] == i && a[1] != i && a[1] == null) {
-			farbe = "#4169E1";
+			farbe = firstCompareColor;
         } else {
 			if(a[1] == i) {
-				farbe = "red";
+				farbe = thirdHighlightColor;
 			} else {
-				farbe = "#7D7D7D";
+				farbe = normalColor;
 			}
         }
         setDiv(div, wert, farbe, false);
@@ -714,28 +723,28 @@ function quickSort(l, r) {
 }
 
 function partition(l, r) {
-	var x = hilfsArray[l];
+	var x = secondArray[l];
 	var i = l+1;
 	var j = r;
 	do {
-		while(i <= r && hilfsArray[i] <= x) {
+		while(i <= r && secondArray[i] <= x) {
 			var a = [false, i, r, l, false]; 
 			i++;
 		}
-		while(j >= l-1 && hilfsArray[j] > x) {
+		while(j >= l-1 && secondArray[j] > x) {
 			j--
 		}
 		if(i < j) {
-			var temp = hilfsArray[i];
-			hilfsArray[i] = hilfsArray[j];
-			hilfsArray[j] = temp;
+			var temp = secondArray[i];
+            secondArray[i] = secondArray[j];
+            secondArray[j] = temp;
 			i++;
 			j--;
 		}
  	} while(i <= j)
-	var temp = hilfsArray[j];
-	hilfsArray[j] = hilfsArray[l];
-	hilfsArray[l] = temp;
+	var temp = secondArray[j];
+    secondArray[j] = secondArray[l];
+    secondArray[l] = temp;
 	return j;
 }
 
@@ -787,7 +796,7 @@ function changeStyle(visible) {
 		
 		// enable the sliders
         document.getElementById("speedSlider").disabled = false;
-        document.getElementById("anzahlSlider").disabled = false;
+        document.getElementById("elemSlider").disabled = false;
 		
 		// change the opacity of the buttons on the left
         for (var i of document.getElementsByClassName("leftNavElem")) {
@@ -816,7 +825,7 @@ function changeStyle(visible) {
             i.style.cursor = "default";
         }
         document.getElementById("speedSlider").disabled = true;
-        document.getElementById("anzahlSlider").disabled = true;
+        document.getElementById("elemSlider").disabled = true;
         for (var i of document.getElementsByClassName("leftNavElem")) {
             if (i !== document.getElementById("sortDiv")) {
                 i.style.opacity = "0.2";
@@ -831,7 +840,7 @@ function createArray(anzahl) {
     //document.getElementById("sortingTimeSpan").innerHTML = time.toFixed(2) + "ms";
     stop = false;
     sorting = false;
-    schritt = 0;
+    currentStep = 0;
     swapCreated = false;
     changed = [];
     swap = [];
@@ -899,7 +908,7 @@ function createArray(anzahl) {
 	var tempArray = Array(maxNumber);
 	var elems = maxNumber;
 	for(var i = 0; i < maxNumber; i++) {
-		tempArray[i] = i+10;
+		tempArray[i] = i+minNumber;
 	}
 	
 	for(var i = 0; i < anzahl; i++) {
@@ -918,7 +927,7 @@ function createArray(anzahl) {
     array = a;
     divs = d;
     drawArray();
-    hilfsArray = array.slice(0);
+    secondArray = array.slice(0);
 };
 
 function setDiv(div, height, farbe, visible) {
@@ -940,7 +949,7 @@ function drawArray(a) {
         drawArrayDefault();
         return;
     }
-    switch(algoNumber) {
+    switch(algorithmNumber) {
         case 0: {
             drawArrayBubbleSort(a);
             break;
@@ -962,7 +971,7 @@ function drawArray(a) {
 }
 
 function drawArrayDefault() {
-    var farbe = (checkSorted() == 0 ? "#3CB371" : "#7D7D7D");
+    var farbe = (checkSorted() == 0 ? sortedColor : normalColor);
     for (var i = 0; i < array.length; i++) {
         div = divs[i];
         wert = array[i];
@@ -995,7 +1004,7 @@ function testSort(v = 100, l = 100) {
     for (var i = 0; i < versuche; i++) {
         createArray(laenge);
         bubbleSort();
-        korrekt += (checkSorted(hilfsArray) == 0) ? 1 : 0;
+        korrekt += (checkSorted(secondArray) == 0) ? 1 : 0;
     }
     endTime = performance.now();
     zeit = endTime - startTime;
@@ -1008,7 +1017,7 @@ function testSort(v = 100, l = 100) {
     for (var i = 0; i < versuche; i++) {
         createArray(laenge);
         mergeSort(0, array.length - 1);
-        korrekt += (checkSorted(hilfsArray) == 0) ? 1 : 0;
+        korrekt += (checkSorted(secondArray) == 0) ? 1 : 0;
     }
     endTime = performance.now();
     zeit = endTime - startTime;
@@ -1021,7 +1030,7 @@ function testSort(v = 100, l = 100) {
     for (var i = 0; i < versuche; i++) {
         createArray(laenge);
         insertionSort();
-        korrekt += (checkSorted(hilfsArray) == 0) ? 1 : 0;
+        korrekt += (checkSorted(secondArray) == 0) ? 1 : 0;
     }
     endTime = performance.now();
     zeit = endTime - startTime;
