@@ -41,9 +41,9 @@ speed = $('#speedSlider');
 
 // initializing site
 rangeSlider();
-var interval = 0;
+let interval = 0;
 createArray(parseInt(document.getElementById("elemSlider").value));
-var interval = parseInt(document.getElementById("speedSlider").value);
+interval = parseInt(document.getElementById("speedSlider").value);
 
 // 
 
@@ -58,7 +58,7 @@ function rangeSlider() {
     });
 };
 
-document.getElementById('titel').onclick = function () {
+document.getElementById('title').onclick = function () {
     window.location.href = "https://nilslambertz.github.io";
 }
 

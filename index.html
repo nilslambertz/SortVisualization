@@ -8,21 +8,22 @@
 </head>
     <body>
         <div id="topNav">
-            <div id="titel">
+            <div id="title">
                 nilslambertz.de
             </div>
             <div class="navElem" id="elemSliderDiv">
+                elements
                 <input type="range" min="10" max="600" value="100" class="slider" id="elemSlider">
-                <span class="sliderValue">100</span> elements
+                <span id="sliderValue">100</span>
             </div>
             <div class="navElem" id="speedSliderDiv">
                   <label>speed</label>
                 <input type="range" min="10" max="1000" value="1000" class="slider" id="speedSlider">
             </div>
-            <div class="navElem" id="createArrayDiv">
+            <div class="navElem pressable" id="createArrayDiv">
                 new array
             </div>
-            <div class="navElem" id="stepDiv">
+            <div class="navElem pressable" id="stepDiv">
                 step by step
             </div>
             <!--<div class="navElem" id="instantSortDiv">
@@ -34,19 +35,19 @@
             <div class="leftNavElem notSorting" id="sortDiv">
                 sort
             </div>
-            <div class="leftNavElem" id="bubbleSortDiv">
+            <div class="leftNavElem pressable" id="bubbleSortDiv">
                 bubblesort
             </div>
-            <div class="leftNavElem" id="explosionSort">
+            <div class="leftNavElem pressable" id="explosionSort">
                 explosionsort
             </div>
-            <div class="leftNavElem" id="insertionSortDiv">
+            <div class="leftNavElem pressable" id="insertionSortDiv">
                 insertionsort 
             </div>
-            <div class="leftNavElem" id="mergeSortDiv">
+            <div class="leftNavElem pressable" id="mergeSortDiv">
                 mergesort
             </div>
-			<div class="leftNavElem" id="quickSortDiv">
+			<div class="leftNavElem pressable" id="quickSortDiv">
 				quicksort 
 			</div>
 
@@ -57,6 +58,7 @@
       </div>
 
       <div id="bottomNav" style="overflow: hidden">
+          <div class="navElem pressable">Switch theme</div>
       </div>
     </body>
 </html>
