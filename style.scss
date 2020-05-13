@@ -6,7 +6,7 @@ html, body {
   margin: 0;
   padding: 0;
   font-family: Arial, serif;
-  font-family: "Roboto", sans-serif;
+  font-family: 'Roboto', sans-serif;
   color: white;
   font-size: 30px;
   -webkit-touch-callout: none;
@@ -56,6 +56,7 @@ html, body {
 }
 
 /* nav-bar on the left */
+
 #leftNav {
   height: calc(100% - 102px);
   border-right: 1px solid white;
@@ -116,6 +117,7 @@ html, body {
 }
 
 /* nav-bar at the bottom */
+
 #bottomNav {
   border-top: 1px solid white;
   height: 50px;
@@ -126,6 +128,7 @@ html, body {
 }
 
 /* pressable buttons on the nav-bars*/
+
 .pressable {
   cursor: pointer;
 }
@@ -136,6 +139,7 @@ html, body {
 }
 
 /* sorting-area */
+
 #content {
   height: calc(100% - 122px);
   width: calc(100% - 291px);
@@ -150,32 +154,28 @@ html, body {
 }
 
 /* */
+
+
 /* The slider itself */
 .slider {
-  -webkit-appearance: none;
-  /* Override default CSS styles */
-  height: 5px;
-  /* Specified height */
-  background: #d3d3d3;
-  /* Grey background */
+  -webkit-appearance: none; /* Override default CSS styles */
+  height: 5px; /* Specified height */
+  background: #d3d3d3; /* Grey background */
   border-radius: 5px;
-  outline: none;
-  /* Remove outline */
+  outline: none; /* Remove outline */
   padding: 0;
   margin: 0;
   cursor: default;
-  vertical-align: middle;
+  vertical-align:middle;
 }
+
 
 /* The slider handle (use -webkit- (Chrome, Opera, Safari, Edge) and -moz- (Firefox) to override default look) */
 .slider::-webkit-slider-thumb {
-  -webkit-appearance: none;
-  /* Override default look */
+  -webkit-appearance: none; /* Override default look */
   width: 25px;
   height: 25px;
   border-radius: 25px;
   cursor: pointer;
   background: #4CAF50;
 }
-
-/*# sourceMappingURL=style.css.map */

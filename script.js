@@ -49,21 +49,22 @@ interval = parseInt(document.getElementById("speedSlider").value);
 
 function rangeSlider() {
     range.each(function () {
-       var value = $(this).prev().attr('value');
+       let value = $(this).prev().attr('value');
        $(this).html(value);
     });
 
     range.on('input', function () {
         $(this).next(value).html(this.value);
     });
-};
+}
 
 document.getElementById('title').onclick = function () {
+    // redirect to main page
     window.location.href = "https://nilslambertz.github.io";
 }
 
 document.getElementById('explosionSort').onclick = function () {
-    if (sorting && !stop) {
+    if (currentlySorting()) {
         return;
     }
 	
@@ -71,25 +72,23 @@ document.getElementById('explosionSort').onclick = function () {
     window.open('https://www.youtube.com/watch?v=dQw4w9WgXcQ', '_blank');
 }
 
-document.getElementById('sortDiv').onclick = function (e) {
-	// copy 'array' to 'secondArray'
+document.getElementById('sortDiv').onclick = function () {
     secondArray = array.slice(0);
 	
 	// update interval
     interval = parseInt(document.getElementById("speedSlider").max) - parseInt(document.getElementById("speedSlider").value);
 	
 	// if array is already sorted, do nothing
-    if (checkSorted() == 0) {
+    if (checkSorted() === 0) {
         stop = false;
         sorting = false;
         return;
     }
 	
 	// if currently sorting, stop sorting and make buttons visible
-    if (sorting && !stop) {
+    if (currentlySorting()) {
         stop = true;
         changeStyle(true);
-        return;
     } else {
 		// currently not sorting
 	
@@ -97,8 +96,8 @@ document.getElementById('sortDiv').onclick = function (e) {
         if (!swapCreated) {
             swap = [];
             time = 0;
-            var startTime = 0;
-            var endTime = 0;
+            let startTime = 0;
+            let endTime = 0;
             switch (algorithmNumber) {
 				// BubbleSort
                 case 0: {
@@ -112,7 +111,6 @@ document.getElementById('sortDiv').onclick = function (e) {
                     startTime = performance.now();
                     mergeSort(0, array.length - 1);
                     endTime = performance.now();
-                    swap = swap.reverse();
                     break;
                 }
 				// InsertionSort
@@ -130,7 +128,6 @@ document.getElementById('sortDiv').onclick = function (e) {
             }
             swapCreated = true;
             time = endTime - startTime;
-          //  document.getElementById("sortingTimeSpan").innerHTML = time.toFixed(2) + "ms";
         }
 		
 		// make buttons invisible
@@ -161,12 +158,11 @@ document.getElementById('sortDiv').onclick = function (e) {
     }
 };
  
-document.getElementById('stepDiv').onclick = function (e) {
-	// copy 'array' to 'secondArray'
+document.getElementById('stepDiv').onclick = function () {
     secondArray = array.slice(0);
 	
 	// if currently sorting or already sorted, return
-    if ((sorting && !stop) || checkSorted() == 0) {
+    if ((currentlySorting()) || checkSorted() === 0) {
         return;
     }
 
@@ -186,7 +182,7 @@ document.getElementById('stepDiv').onclick = function (e) {
 /*
 document.getElementById('instantSortDiv').onclick = function () {
 	// if currently sorting
-    if (sorting && !stop) {
+    if (currentlySorting()) {
         return;
     }
 
@@ -240,7 +236,7 @@ document.getElementById('instantSortDiv').onclick = function () {
 
 document.getElementById('bubbleSortDiv').onclick = function () {
 	// if currently sorting, return
-    if (sorting && !stop) {
+    if (currentlySorting()) {
         return;
     }
 	
@@ -250,7 +246,7 @@ document.getElementById('bubbleSortDiv').onclick = function () {
     swap = [];
 	
 	// underline bubbleSort, change 'algorithmNumber' and draw the 'array'
-    for (var i of document.getElementsByClassName("leftNavElem")) {
+    for (let i of document.getElementsByClassName("leftNavElem")) {
         i.style.textDecoration = "none";
     }
     document.getElementById("bubbleSortDiv").style.textDecoration = "underline";
@@ -260,7 +256,7 @@ document.getElementById('bubbleSortDiv').onclick = function () {
 
 document.getElementById('mergeSortDiv').onclick = function () {
 	// if currently sorting, return
-    if (sorting && !stop) {
+    if (currentlySorting()) {
         return;
     }
 	
@@ -270,7 +266,7 @@ document.getElementById('mergeSortDiv').onclick = function () {
     swap = [];
 	
 	// underline mergeSort, change 'algorithmNumber' and draw the 'array'
-    for (var i of document.getElementsByClassName("leftNavElem")) {
+    for (let i of document.getElementsByClassName("leftNavElem")) {
         i.style.textDecoration = "none";
     }
     document.getElementById("mergeSortDiv").style.textDecoration = "underline";
@@ -280,7 +276,7 @@ document.getElementById('mergeSortDiv').onclick = function () {
 
 document.getElementById('insertionSortDiv').onclick = function () {
 	// if currently sorting, return
-    if (sorting && !stop) {
+    if (currentlySorting()) {
         return;
     }
 	
@@ -290,7 +286,7 @@ document.getElementById('insertionSortDiv').onclick = function () {
     swap = [];
 	
 	// underline insertionSort, change 'algorithmNumber' and draw the 'array'
-    for (var i of document.getElementsByClassName("leftNavElem")) {
+    for (let i of document.getElementsByClassName("leftNavElem")) {
         i.style.textDecoration = "none";
     }
     document.getElementById("insertionSortDiv").style.textDecoration = "underline";
@@ -300,7 +296,7 @@ document.getElementById('insertionSortDiv').onclick = function () {
 
 document.getElementById("quickSortDiv").onclick = function() {
 	// if currently sorting, return
-	if (sorting && !stop) {
+	if (currentlySorting()) {
         return;
     }
 	
@@ -310,7 +306,7 @@ document.getElementById("quickSortDiv").onclick = function() {
     swap = [];
 	
 	// underline quickSort, change 'algorithmNumber' and draw the 'array'
-    for (var i of document.getElementsByClassName("leftNavElem")) {
+    for (let i of document.getElementsByClassName("leftNavElem")) {
         i.style.textDecoration = "none";
     }
     document.getElementById("quickSortDiv").style.textDecoration = "underline";
@@ -320,25 +316,28 @@ document.getElementById("quickSortDiv").onclick = function() {
 
 // returns the lowest index of an array, where all following elements are sorted
 function checkSorted(a = array) {
-    var firstSorted = 0;
-    for (var i = 1; i < a.length; i++) {
+    let firstSorted = 0;
+    for (let i = 1; i < a.length; i++) {
         if (Math.max(...a.slice(0, i)) > a[i]) {
             firstSorted = i + 1;
         } 
     }
     return firstSorted;
-};
+}
 
-document.getElementById('createArrayDiv').onclick = function (e) {
+function currentlySorting() {
+    return sorting && !stop;
+}
+
+document.getElementById('createArrayDiv').onclick = function () {
 	// if currently sorting
-    if (sorting && !stop) {
+    if (currentlySorting()) {
         return;
     }
 	
 	// create new array
-    var wert = document.getElementById("elemSlider").value;
-    createArray(parseInt(wert));
-	
+    let value = document.getElementById("elemSlider").value;
+    createArray(parseInt(value));
 	changeStyle(true);
 };
 
@@ -346,13 +345,12 @@ document.getElementById('createArrayDiv').onclick = function (e) {
 // Bubblesort
 
 function bubbleSort() {
-    for (var n = secondArray.length; n > 1; n--) {
-        for (var i = 0; i < n - 1; i++) {			
-			// schema: [firstIndex, secondIndex, tauschen]
-			// irgendwann mal ändern zu [ersterIndex, tauschen], da 'zweiterIndex' immer 'ersterIndex + 1'
-            var a = [i, false];
+    for (let n = secondArray.length; n > 1; n--) {
+        for (let i = 0; i < n - 1; i++) {
+			// schema: [firstIndex, swapNeeded]
+            let a = [i, false];
             if (secondArray[i] > secondArray[i + 1]) {
-                var temp = secondArray[i];
+                let temp = secondArray[i];
                 secondArray[i] = secondArray[i + 1];
                 secondArray[i + 1] = temp;
                 a = [i, true];
@@ -360,16 +358,14 @@ function bubbleSort() {
             swap.push(a);
         }
     }
-	
-	// reverse 'swap', so the order is correct again
-    swap = swap.reverse();
+
     swapCreated = true;
 }
 
 function bubbleSortAnimation() {
-    var sortingInterval = setInterval(function () {
+    let sortingInterval = setInterval(function () {
 		// if array is sorted or stop is pressed, make buttons visible and return
-        if (checkSorted() == 0 || stop) {
+        if (checkSorted() === 0 || stop) {
             changeStyle(true);
             clearInterval(sortingInterval);
             return;
@@ -378,7 +374,6 @@ function bubbleSortAnimation() {
 		// do one step 
 		bubbleSortStepByStep();
     }, interval);
-    return; 
 }
 
 function bubbleSortStepByStep() {
@@ -388,16 +383,16 @@ function bubbleSortStepByStep() {
     }
 
 	// if elements must not be swapped
-    if (currentStep % 2 == 0) {
+    if (currentStep % 2 === 0) {
 		// get the next element
-        var a = swap.pop();
+        let a = swap.shift();
 		
 		// if swap is empty, but the array still isn't sorted
 		if(a == null) {
 			alert("Something went wrong!");
 			return;
 		}
-        var firstIndex = a[0];
+        let firstIndex = a[0];
 
         // if next iteration
         if (firstIndex < save[0]) {
@@ -410,7 +405,7 @@ function bubbleSortStepByStep() {
 		
 		// if elements must be swapped, swap them and increase 'currentStep'
         if (a[1]) {
-            var temp = array[firstIndex];
+            let temp = array[firstIndex];
             array[firstIndex] = array[firstIndex+1];
             array[firstIndex+1] = temp;
             currentStep++;
@@ -423,43 +418,43 @@ function bubbleSortStepByStep() {
     }
 
 	// if the array is sorted
-    if (checkSorted() == 0 || stop) {
+    if (checkSorted() === 0 || stop) {
         changeStyle(true);
     }
 }
 
 function drawArrayBubbleSort(a) {
-    var sorted = checkSorted();
+    let sorted = checkSorted();
 	
 	// every element before the sorted part of the array
-    for (var i = 0; i < sorted; i++) {
-        farbe = "";
-        div = divs[i];
-        wert = array[i];
+    for (let i = 0; i < sorted; i++) {
+        let color = "";
+        let div = divs[i];
+        let value = array[i];
         document.getElementById('content').appendChild(divs[i]);
 
-        if (a[0] == i) {
+        if (a[0] === i) {
 			// highlight first index
-            farbe = firstCompareColor;
+            color = firstCompareColor;
         } else {
-            if (a[0]+1 == i) {
+            if (a[0]+1 === i) {
 				// highlight second index
-                farbe = secondCompareColor;
+                color = secondCompareColor;
             } else {
 				// every other element got the default color
-                farbe = normalColor;
+                color = normalColor;
             }
         }
 	
 		// if element has been swapped, highlight it with orange color
 		if (changed.includes(i)) {
-            farbe = secondHighlightColor;
+            color = secondHighlightColor;
         }
-        setDiv(div, wert, farbe, false);
+        setDiv(div, value, color, false);
     }
 	
 	// every already sorted element is green
-    for (var i = sorted; i < array.length; i++) {
+    for (let i = sorted; i < array.length; i++) {
         document.getElementById('content').appendChild(divs[i]);
         setDiv(divs[i], array[i], sortedColor);
     }
@@ -469,23 +464,23 @@ function drawArrayBubbleSort(a) {
 // Mergesort
 
 function mergeSort(l, r) {
-    if (r - l == 0) {
+    if (r - l === 0) {
         // nothing to do
     } else {
-        if (r - l == 1) {
+        if (r - l === 1) {
 			// schema: [firstIndex, secondIndex, needToBeSwapped, null, null, null, false]
-            var a = [l, r, false, null, null, null, false];
+            let a = [l, r, false, null, null, null, false];
             if (secondArray[l] > secondArray[r]) {
-                var temp = secondArray[l];
+                let temp = secondArray[l];
                 secondArray[l] = secondArray[r];
                 secondArray[r] = temp;
                 a = [l, r, true, null, null, null, false];
             }
             swap.push(a);
         } else {
-            var i = Math.floor((r + l) / 2);
+            let i = Math.floor((r + l) / 2);
 			// schema: [null, null, false, leftBorder, rightBorder, mid, false]
-			var a = [null, null, false, l, r, i, false];
+			let a = [null, null, false, l, r, i, false];
 			swap.push(a);
             mergeSort(l, i-1);
             mergeSort(i, r);
@@ -495,28 +490,28 @@ function mergeSort(l, r) {
 }
 
 function merge(l, r, mid) {
-    var j = mid;
+    let j = mid;
     while (j <= r) {
 		// schema: [firstIndex, SecondIndex, false, leftBorder, rightBorder, middle, moved];
-        var a = [j, j-1, false, l, r, j+1, false];
+        let a = [j, j-1, false, l, r, j+1, false];
 		// if smallest element of the second half is smaller than the biggest element of the first half
         if (secondArray[j] < secondArray[j - 1]) {
-            var firstBigger = l;
+            let firstBigger = l;
 			// find first bigger element in the second half
-            for (var x = l; x < j; x++) {
+            for (let x = l; x < j; x++) {
                 if (secondArray[x] > secondArray[j]) {
                     firstBigger = x;
                     break;
                 } 
             }
 			// move every element one place "to the right" and put the current element in the empty space
-            for (var x = j; x > firstBigger; x--) {
-                var temp = secondArray[x];
+            for (let x = j; x > firstBigger; x--) {
+                let temp = secondArray[x];
                 secondArray[x] = secondArray[x - 1];
                 secondArray[x - 1] = temp;
             }
 			// now we moved the elements
-            var a = [firstBigger, j, false, l, r, j+1, true];
+            a = [firstBigger, j, false, l, r, j+1, true];
         }
         swap.push(a);
         j++;
@@ -525,9 +520,9 @@ function merge(l, r, mid) {
 }
 
 function mergeSortAnimation() {
-    var sortingInterval = setInterval(function () {
+    let sortingInterval = setInterval(function () {
 		// if array is sorted or stop is pressed, make buttons visible and return
-        if (checkSorted() == 0 || stop || swap.length == 0) {
+        if (checkSorted() === 0 || stop) {
             clearInterval(sortingInterval);
             changeStyle(true);
             return;
@@ -536,23 +531,21 @@ function mergeSortAnimation() {
 		// do one step 
         mergeSortStepByStep();
     }, interval);
-    return;
 }
 
 function mergeSortStepByStep() {	
 	if (!swapCreated) {
         mergeSort(0, array.length - 1);
-        swap = swap.reverse();
         swapCreated = true;
     }
 	
-	if (currentStep % 2 == 0) {
-        var a = swap.pop();
-        var firstIndex = a[0];
-        var secondIndex = a[1];
-		var left = a[3];
-		var mid = a[4];
-		var right = a[5];
+	if (currentStep % 2 === 0) {
+        let a = swap.shift();
+        let firstIndex = a[0];
+        let secondIndex = a[1];
+        let left = a[3];
+        let mid = a[4];
+        let right = a[5];
         save[0] = firstIndex;
         save[1] = secondIndex;
 		save[2] = left;
@@ -561,10 +554,8 @@ function mergeSortStepByStep() {
 		
 		
         if (a[6]) {
-            var firstBigger = firstIndex;
-            var j = secondIndex;
-            for (var x = j; x > firstBigger; x--) {
-                var temp = array[x];
+            for (let x = secondIndex; x > firstIndex; x--) {
+                let temp = array[x];
                 array[x] = array[x - 1];
                 array[x - 1] = temp;
             }
@@ -576,7 +567,7 @@ function mergeSortStepByStep() {
             }
 		}
     } else {
-        var temp = array[save[0]];
+        let temp = array[save[0]];
         array[save[0]] = array[save[1]];
         array[save[1]] = temp;
         drawArray([save[1], save[0], save[2], save[4], save[3]]);
@@ -584,47 +575,47 @@ function mergeSortStepByStep() {
     }
 	
 		
-	if (checkSorted() == 0 || stop) {
+	if (checkSorted() === 0 || stop) {
         changeStyle(true);
     }
 }
 
 function drawArrayMergeSort(a) {
-    var sorted = checkSorted();
-    if(sorted == 0) {
+    let sorted = checkSorted();
+    if(sorted === 0) {
         drawArrayDefault();
         return;
     }
 
-    for (var i = 0; i < array.length; i++) {
-        farbe = "";
-        div = divs[i];
-        wert = array[i];
+    for (let i = 0; i < array.length; i++) {
+        let color = "";
+        let div = divs[i];
+        let value = array[i];
         document.getElementById('content').appendChild(divs[i]);
 		
 		if (a[2] != null) {
             if (a[2] <= i && i < a[3]) {
-				farbe = firstHighlightColor;
+                color = firstHighlightColor;
             } else {
                 if (a[3] <= i && i <= a[4]) {
-                    farbe = secondHighlightColor;
+                    color = secondHighlightColor;
                 } else {
-                    farbe = normalColor;
+                    color = normalColor;
                 }
             }
         } else {
-			if (a[0] == i) {
-				farbe = firstCompareColor;
+			if (a[0] === i) {
+                color = firstCompareColor;
 			} else {
-				if (a[1] == i) {
-					farbe = secondCompareColor;
+				if (a[1] === i) {
+                    color = secondCompareColor;
 				} else {
-					farbe = normalColor;
+                    color = normalColor;
 				}
 			}
         }
 		
-		setDiv(div, wert, farbe, false);
+		setDiv(div, value, color, false);
     }
 }
 
@@ -632,10 +623,10 @@ function drawArrayMergeSort(a) {
 // InsertionSort
 
 function insertionSort() {
-    for(var i = 0; i < secondArray.length; i++) {
+    for(let i = 0; i < secondArray.length; i++) {
 		swap.push([i]);
-        var temp = secondArray[i];
-        var j = i;
+        let temp = secondArray[i];
+        let j = i;
 		// find correct position in the part of the array that is left from the current element and put it there
         while(j > 0 && secondArray[j-1] > temp) {
             secondArray[j] = secondArray[j-1];
@@ -644,14 +635,13 @@ function insertionSort() {
 		swap.push([i, j]);
         secondArray[j] = temp;
     }
-    swap = swap.reverse();
     swapCreated = true;
 }
 
 function insertionSortAnimation() {
-	var sortingInterval = setInterval(function () {
+    let sortingInterval = setInterval(function () {
 		// if array is sorted or stop is pressed, make buttons visible and return
-        if (checkSorted() == 0 || stop) {
+        if (checkSorted() === 0 || stop) {
             changeStyle(true);
             clearInterval(sortingInterval);
             return;
@@ -660,7 +650,6 @@ function insertionSortAnimation() {
         // do one step 
         insertionSortStepByStep();
     }, interval);
-    return; 
 }
 
 function insertionSortStepByStep() {
@@ -669,12 +658,12 @@ function insertionSortStepByStep() {
         swapCreated = true;
     }
 
-    var a = swap.pop();
-    var index = a[0];
-	var pos = a[1]; 
+    let a = swap.shift();
+    let index = a[0];
+    let pos = a[1];
 	if(pos != null) {
-		var temp = array[index];
-		var j = index;
+        let temp = array[index];
+        let j = index;
 		while(array[j-1] > temp) {
 			array[j] = array[j-1];
 			j--;
@@ -683,28 +672,28 @@ function insertionSortStepByStep() {
 	}
     drawArray(a);
 
-    if (checkSorted() == 0 || stop) {
+    if (checkSorted() === 0 || stop) {
         changeStyle(true);
     }
 }
 
 function drawArrayInsertionSort(a) {
-    for (var i = 0; i < array.length; i++) {
-        farbe = "";
-        div = divs[i];
-        wert = array[i];
+    for (let i = 0; i < array.length; i++) {
+        let color = "";
+        let div = divs[i];
+        let value = array[i];
         document.getElementById('content').appendChild(divs[i]);
 
-        if (a[0] == i && a[1] != i && a[1] == null) {
-			farbe = firstCompareColor;
+        if (a[0] === i && a[1] !== i && a[1] == null) {
+            color = firstCompareColor;
         } else {
-			if(a[1] == i) {
-				farbe = thirdHighlightColor;
+			if(a[1] === i) {
+                color = thirdHighlightColor;
 			} else {
-				farbe = normalColor;
+                color = normalColor;
 			}
         }
-        setDiv(div, wert, farbe, false);
+        setDiv(div, value, color, false);
     }
 }	
 
@@ -715,34 +704,35 @@ function quickSort(l, r) {
 	if(l >= r) {
 		return;
 	}
-	var j = partition(l, r);
-	var a = [true, l, j, r];
+    let j = partition(l, r);
+    let a = [true, l, j, r];
 	swap.push(a);
 	quickSort(l, j-1);
 	quickSort(j+1, r);
 }
 
 function partition(l, r) {
-	var x = secondArray[l];
-	var i = l+1;
-	var j = r;
+    let x = secondArray[l];
+    let i = l+1;
+    let j = r;
 	do {
 		while(i <= r && secondArray[i] <= x) {
-			var a = [false, i, r, l, false]; 
+            let a = [false, i, r, l, false];
+            // missing
 			i++;
 		}
 		while(j >= l-1 && secondArray[j] > x) {
 			j--
 		}
 		if(i < j) {
-			var temp = secondArray[i];
+            let temp = secondArray[i];
             secondArray[i] = secondArray[j];
             secondArray[j] = temp;
 			i++;
 			j--;
 		}
  	} while(i <= j)
-	var temp = secondArray[j];
+    let temp = secondArray[j];
     secondArray[j] = secondArray[l];
     secondArray[l] = temp;
 	return j;
@@ -754,12 +744,12 @@ function quickSortStepByStep() {
         swapCreated = true;
     }
 
-    var a = swap.pop();
-    var index = a[0];
-	var pos = a[1]; 
+    let a = swap.shift();
+    let index = a[0];
+    let pos = a[1];
 	if(pos != null) {
-		var temp = array[index];
-		var j = index;
+        let temp = array[index];
+        let j = index;
 		while(array[j-1] > temp) {
 			array[j] = array[j-1];
 			j--;
@@ -768,12 +758,12 @@ function quickSortStepByStep() {
 	}
     drawArray(a);
 
-    if (checkSorted() == 0 || stop) {
+    if (checkSorted() === 0 || stop) {
         changeStyle(true);
     }
 }
 
-// :D
+// other functions
 
 function changeStyle(visible) {
 	// if buttons should be visible
@@ -787,7 +777,7 @@ function changeStyle(visible) {
         document.getElementById('sortDiv').classList.add("notSorting");
 		
 		// change the opacity of the buttons on the top and set a pointer-cursor for the buttons
-        for (var i of document.getElementsByClassName("navElem")) {
+        for (let i of document.getElementsByClassName("navElem")) {
             i.style.opacity = "1";
             if (i !== document.getElementById("speedSliderDiv") && i !== document.getElementById("elemSliderDiv")) {
                 i.style.cursor = "pointer";
@@ -799,7 +789,7 @@ function changeStyle(visible) {
         document.getElementById("elemSlider").disabled = false;
 		
 		// change the opacity of the buttons on the left
-        for (var i of document.getElementsByClassName("leftNavElem")) {
+        for (let i of document.getElementsByClassName("leftNavElem")) {
             if (i !== document.getElementById("sortDiv")) {
                 i.style.opacity = "1";
                 i.style.cursor = "pointer";
@@ -807,26 +797,25 @@ function changeStyle(visible) {
         }
 		
 		// if array ist sorted, make the sortButton grey
-        if (checkSorted() == 0) {
+        if (checkSorted() === 0) {
             drawArray();
 			document.getElementById('sortDiv').classList.remove("notSorting");
 			document.getElementById('sortDiv').classList.add("sorted");	
 			document.getElementById('sortDiv').style.cursor = "default";
 			document.getElementById('sortDiv').innerHTML = "sorted";
         }
-        return;	
     } else {
         sorting = true;
         document.getElementById('sortDiv').innerHTML = 'stop';
         document.getElementById('sortDiv').classList.remove("notSorting");
         document.getElementById('sortDiv').classList.add("sorting");
-        for (var i of document.getElementsByClassName("navElem")) {
+        for (let i of document.getElementsByClassName("navElem")) {
             i.style.opacity = "0.2";
             i.style.cursor = "default";
         }
         document.getElementById("speedSlider").disabled = true;
         document.getElementById("elemSlider").disabled = true;
-        for (var i of document.getElementsByClassName("leftNavElem")) {
+        for (let i of document.getElementsByClassName("leftNavElem")) {
             if (i !== document.getElementById("sortDiv")) {
                 i.style.opacity = "0.2";
                 i.style.cursor = "default";
@@ -835,9 +824,8 @@ function changeStyle(visible) {
     }
 }
 
-function createArray(anzahl) {
+function createArray(elems) {
     time = 0;
-    //document.getElementById("sortingTimeSpan").innerHTML = time.toFixed(2) + "ms";
     stop = false;
     sorting = false;
     currentStep = 0;
@@ -846,46 +834,43 @@ function createArray(anzahl) {
     swap = [];
     save = [];
 
-    if (anzahl > maxNumber) {
-        anzahl = maxNumber;
-        console.log("Too many elements. Elements set to " + anzahl);
+    if (elems > maxNumber) {
+        elems = maxNumber;
+        console.log("Too many elements. Elements set to " + elems);
     }
-	    
-    n = anzahl;
-    i = 0;
+
     changed = [];
-    if (anzahl < 20) {
+    if (elems < 20) {
         margin = 5;
         width = 40;
         round = 4;
-		//document.getElementById("content").style.minWidth = "1000px";
     } else {
-        if (anzahl < 50) {
+        if (elems < 50) {
             margin = 4;
             width = 9;
             round = 2;
         } else {
-            if (anzahl < 100) {
+            if (elems < 100) {
                 margin = 3;
                 width = 7;
                 round = 2;
             } else {
-                if (anzahl < 150) {
+                if (elems < 150) {
                     margin = 2;
                     width = 5;
                     round = 1;
                 } else {
-                    if (anzahl < 200) {
+                    if (elems < 200) {
                         margin = 1;
                         width = 4;
                         round = 1;
                     } else {
-                        if (anzahl < 250) {
+                        if (elems < 250) {
                             margin = 1;
                             width = 3;
                             round = 0;
                         } else {
-							if(anzahl < 400) {
+							if(elems < 400) {
 								margin = 1;
 								width = 2;
 								round = 0;
@@ -902,25 +887,23 @@ function createArray(anzahl) {
 
     }
 
-    var a = Array(anzahl);
-    var d = Array(anzahl);
-	
-	var tempArray = Array(maxNumber);
-	var elems = maxNumber;
-	for(var i = 0; i < maxNumber; i++) {
+    let a = Array(elems);
+    let d = Array(elems);
+
+    let tempArray = Array(maxNumber);
+	for(let i = 0; i < maxNumber; i++) {
 		tempArray[i] = i+minNumber;
 	}
 	
-	for(var i = 0; i < anzahl; i++) {
-		var index = Math.round(Math.random() * (elems-1));
-		elems--;
+	for(let i = 0; i < elems; i++) {
+        let index = Math.round(Math.random() * (tempArray.length-1));
 		a[i] = tempArray[index];
 		tempArray.splice(index, 1);
 	}
 	
-	for(var i = 0; i < anzahl; i++) {
-		var temp = document.createElement('div');
-        temp.setAttribute('id', i);
+	for(let i = 0; i < elems; i++) {
+        let temp = document.createElement('div');
+        temp.setAttribute('id', i + "");
         d[i] = temp;
 	}
 	
@@ -928,7 +911,7 @@ function createArray(anzahl) {
     divs = d;
     drawArray();
     secondArray = array.slice(0);
-};
+}
 
 function setDiv(div, height, farbe, visible) {
     div.style.color = (visible ? "white" : farbe);
@@ -941,7 +924,7 @@ function setDiv(div, height, farbe, visible) {
     div.style.display = "inline-block";
     div.style.verticalAlign = "top";
     div.style.borderRadius = "0px 0px " + round + "px " + round + "px";
-};
+}
 
 function drawArray(a) {
     document.getElementById('content').innerHTML = '';
@@ -971,12 +954,12 @@ function drawArray(a) {
 }
 
 function drawArrayDefault() {
-    var farbe = (checkSorted() == 0 ? sortedColor : normalColor);
-    for (var i = 0; i < array.length; i++) {
-        div = divs[i];
-        wert = array[i];
+    let color = (checkSorted() === 0 ? sortedColor : normalColor);
+    for (let i = 0; i < array.length; i++) {
+        let div = divs[i];
+        let value = array[i];
         document.getElementById('content').appendChild(divs[i]);
-        setDiv(div, wert, farbe, false);
+        setDiv(div, value, color, false);
     }
 }
 
@@ -990,52 +973,50 @@ function testSort(v = 100, l = 100) {
         l = 2;
     }
 
-    var versuche = v;
-    var laenge = l;
-    var startTime = 0;
-    var endTime = 0;
-    var zeit = 0;
-    var korrekt = 0;
-    console.log("Teste Algorithmen mit " + versuche + " Versuchen und Array der Gr" + unescape("%F6") + unescape("%DF") + "e " + laenge);
+    let startTime;
+    let endTime;
+    let time;
+    let correct;
+    console.log("Teste Algorithmen mit " + v + " Versuchen und Array der Gr" + unescape("%F6") + unescape("%DF") + "e " + l);
 
     console.log("\t1. BubbleSort");
-    korrekt = 0;
+    correct = 0;
     startTime = performance.now();
-    for (var i = 0; i < versuche; i++) {
-        createArray(laenge);
+    for (let i = 0; i < v; i++) {
+        createArray(l);
         bubbleSort();
-        korrekt += (checkSorted(secondArray) == 0) ? 1 : 0;
+        correct += (checkSorted(secondArray) === 0) ? 1 : 0;
     }
     endTime = performance.now();
-    zeit = endTime - startTime;
-    console.log("\t\t" + korrekt + " von " + versuche + " Tests korrekt!");
-    console.log("\t\tBen" + unescape("%F6") + "tigte Zeit: " + zeit.toFixed(2) + "ms");
+    time = endTime - startTime;
+    console.log("\t\t" + correct + " von " + v + " Tests korrekt!");
+    console.log("\t\tBen" + unescape("%F6") + "tigte Zeit: " + time.toFixed(2) + "ms");
 
     console.log("\t2. MergeSort");
-    korrekt = 0;
+    correct = 0;
     startTime = performance.now();
-    for (var i = 0; i < versuche; i++) {
-        createArray(laenge);
+    for (let i = 0; i < v; i++) {
+        createArray(l);
         mergeSort(0, array.length - 1);
-        korrekt += (checkSorted(secondArray) == 0) ? 1 : 0;
+        correct += (checkSorted(secondArray) === 0) ? 1 : 0;
     }
     endTime = performance.now();
-    zeit = endTime - startTime;
-    console.log("\t\t" + korrekt + " von " + versuche + " Tests korrekt!");
-    console.log("\t\tBen" + unescape("%F6") + "tigte Zeit: " + zeit.toFixed(2) + "ms");
+    time = endTime - startTime;
+    console.log("\t\t" + correct + " von " + v + " Tests korrekt!");
+    console.log("\t\tBen" + unescape("%F6") + "tigte Zeit: " + time.toFixed(2) + "ms");
 
     console.log("\t3. InsertionSort");
-    korrekt = 0;
+    correct = 0;
     startTime = performance.now();
-    for (var i = 0; i < versuche; i++) {
-        createArray(laenge);
+    for (let i = 0; i < v; i++) {
+        createArray(l);
         insertionSort();
-        korrekt += (checkSorted(secondArray) == 0) ? 1 : 0;
+        correct += (checkSorted(secondArray) === 0) ? 1 : 0;
     }
     endTime = performance.now();
-    zeit = endTime - startTime;
-    console.log("\t\t" + korrekt + " von " + versuche + " Tests korrekt!");
-    console.log("\t\tBen" + unescape("%F6") + "tigte Zeit: " + zeit.toFixed(2) + "ms");
+    time = endTime - startTime;
+    console.log("\t\t" + correct + " von " + v + " Tests korrekt!");
+    console.log("\t\tBen" + unescape("%F6") + "tigte Zeit: " + time.toFixed(2) + "ms");
 	
     return "Test beendet!";
 }
