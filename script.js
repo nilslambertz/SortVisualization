@@ -26,13 +26,13 @@ const minNumber = 10; // smallest possible element in the array (min height of t
 const maxNumber = 600; // biggest possible element in the array (max height of the divs)
 
 // colors
-const sortedColor = "#228B22";
-const normalColor = "#7D7D7D";
-const firstHighlightColor = "#FFA54F";
-const secondHighlightColor = "#EE7621";
-const firstCompareColor = "#4169E1";
-const secondCompareColor = "#00B2EE";
-const thirdHighlightColor = "#EE4000";
+let sortedColor = "#228B22";
+let normalColor = "#7D7D7D";
+let firstHighlightColor = "#FFA54F";
+let secondHighlightColor = "#EE7621";
+let firstCompareColor = "#4169E1";
+let secondCompareColor = "#00B2EE";
+let thirdHighlightColor = "#EE4000";
 
 // Initialize Sliders
 range = $('#elemSlider');
@@ -40,10 +40,13 @@ value = $('#sliderValue');
 speed = $('#speedSlider');
 
 // initializing site
-rangeSlider();
 let interval = 0;
-createArray(parseInt(document.getElementById("elemSlider").value));
-interval = parseInt(document.getElementById("speedSlider").value);
+$('document').ready(function() {
+    document.body.classList.add('default');
+    rangeSlider();
+    createArray(parseInt(document.getElementById("elemSlider").value));
+    interval = parseInt(document.getElementById("speedSlider").value);
+})
 
 // 
 
@@ -177,6 +180,19 @@ document.getElementById('stepDiv').onclick = function () {
     }
 };
 
+document.getElementById('defaultThemeDiv').onclick = function() {
+    document.body.classList.remove('dark');
+    document.body.classList.add('default');
+    changeTheme(0);
+    drawArray(algorithmNumber);
+}
+
+document.getElementById('darkThemeDiv').onclick = function() {
+    document.body.classList.remove('default');
+    document.body.classList.add('dark');
+    changeTheme(1);
+    drawArray(algorithmNumber);
+}
 
 {
 /*
@@ -764,6 +780,31 @@ function quickSortStepByStep() {
 }
 
 // other functions
+
+function changeTheme(nr) {
+    switch(nr) {
+        case 0: {
+            sortedColor = "#228B22";
+            normalColor = "#7D7D7D";
+            firstHighlightColor = "#FFA54F";
+            secondHighlightColor = "#EE7621";
+            firstCompareColor = "#4169E1";
+            secondCompareColor = "#00B2EE";
+            thirdHighlightColor = "#EE4000";
+            break;
+        }
+        case 1: {
+            sortedColor = "#228B22";
+            normalColor = "#ADADAD";
+            firstHighlightColor = "#FFA54F";
+            secondHighlightColor = "#EE7621";
+            firstCompareColor = "#4169E1";
+            secondCompareColor = "#00B2EE";
+            thirdHighlightColor = "#EE4000";
+            break;
+        }
+    }
+}
 
 function changeStyle(visible) {
 	// if buttons should be visible

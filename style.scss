@@ -1,13 +1,52 @@
+/* color variables */
+
+$navHeight: 50px;
+$navBorder: 1px;
+$background: red;
+$contentPadding: 20px;
+
+.default {
+  --backgroundGradientLeft: #1C86EE;
+  --backgroundGradientRight: #4169E1;
+
+  --contentGradientLeft: #E5E5E5;
+  --contentGradientRight: #B5B5B5;
+  --contentShadow: #8C8C8C;
+
+  --buttonHoverColor: #1874CD;
+
+  --sortButtonColor: black;
+
+  --fontColorNav: white;
+  --fontColorLeftNav: black;
+}
+
+.dark {
+  --backgroundGradientLeft: #454545;
+  --backgroundGradientRight: #262626;
+
+  --contentGradientLeft: #6E6E6E;
+  --contentGradientRight: #616161;
+  --contentShadow: #424242;
+
+  --buttonHoverColor: #4F4F4F;
+
+  --sortButtonColor: black;
+
+  --fontColorNav: white;
+  --fontColorLeftNav: #BFBFBF;
+}
+
 /* default values */
 html, body {
   height: 100%;
   width: 100%;
-  background: linear-gradient(to left, #4169E1, #1C86EE);
   margin: 0;
   padding: 0;
   font-family: Arial, serif;
   font-family: 'Roboto', sans-serif;
-  color: white;
+  background: linear-gradient(to right, var(--backgroundGradientLeft), var(--backgroundGradientRight));
+  color: var(--fontColorNav);
   font-size: 30px;
   -webkit-touch-callout: none;
   -webkit-user-select: none;
@@ -22,15 +61,15 @@ html, body {
   float: left;
   width: 250px;
   text-align: center;
-  color: black;
+  color: var(--fontColorLeftNav);
   font-weight: bold;
-  border-right: 1px solid white;
+  border-right: $navBorder solid white;
 }
 
 /* nav-bar at the top */
 #topNav {
-  border-bottom: 1px solid white;
-  height: 50px;
+  border-bottom: $navBorder solid white;
+  height: $navHeight;
   width: 100%;
   line-height: 50px;
   padding: 0;
@@ -39,9 +78,9 @@ html, body {
 }
 
 .navElem {
-  border-right: 1px solid white;
+  border-right: $navBorder solid white;
   line-height: 50px;
-  height: 50px;
+  height: $navHeight;
   padding-right: 10px;
   padding-left: 10px;
   vertical-align: middle;
@@ -59,12 +98,12 @@ html, body {
 
 #leftNav {
   height: calc(100% - 102px);
-  border-right: 1px solid white;
+  border-right: $navBorder solid white;
   width: 250px;
-  color: black;
+  color: var(--fontColorLeftNav);
   font-weight: bold;
   cursor: default;
-  line-height: 50px;
+  line-height: $navHeight;
   float: left;
 }
 
@@ -80,7 +119,8 @@ html, body {
 
 #sortDiv {
   font-size: 30px;
-  border-bottom: 1px solid white;
+  color: var(--sortButtonColor);
+  border-bottom: $navBorder solid white;
   transition: background-color 0.4s, font-size 0.4s;
 }
 
@@ -119,8 +159,8 @@ html, body {
 /* nav-bar at the bottom */
 
 #bottomNav {
-  border-top: 1px solid white;
-  height: 50px;
+  border-top: $navBorder solid white;
+  height: $navHeight;
   width: 100%;
   line-height: 50px;
   overflow: auto;
@@ -134,23 +174,23 @@ html, body {
 }
 
 .pressable:hover {
-  background-color: #1874CD;
+  background-color: var(--buttonHoverColor);
   transition: background-color 0.25s;
 }
 
 /* sorting-area */
 
 #content {
-  height: calc(100% - 122px);
+  height: calc(100% - #{$navHeight*2 + $navBorder*2 + $contentPadding});
   width: calc(100% - 291px);
   background: #E5E5E5;
-  background: linear-gradient(to bottom right, #E5E5E5, #B5B5B5);
+  background: linear-gradient(to bottom right, var(--contentGradientLeft), var(--contentGradientRight));
   text-align: center;
-  padding: 0px 20px 20px;
+  padding: 0px $contentPadding $contentPadding;
   overflow: auto;
   white-space: nowrap;
   float: left;
-  box-shadow: 0px 0px 20px 5px #8C8C8C inset;
+  box-shadow: 0px 0px 20px 5px var(--contentShadow) inset;
 }
 
 /* */
