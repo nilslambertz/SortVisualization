@@ -86,7 +86,6 @@ html, body {
   border-right: 1px solid white;
   width: 250px;
   color: var(--fontColorLeftNav);
-  font-weight: bold;
   cursor: default;
   line-height: 50px;
   float: left;
@@ -96,7 +95,7 @@ html, body {
   width: 100%;
   text-align: center;
   line-height: 70px;
-  font-size: 20px;
+  font-size: 24px;
   height: 70px;
   cursor: pointer;
   transition: background-color 0.25s, opacity 0.4s;
@@ -104,6 +103,7 @@ html, body {
 
 #sortDiv {
   font-size: 30px;
+  font-weight: bold;
   color: var(--sortButtonColor);
   border-bottom: 1px solid white;
   transition: background-color 0.4s, font-size 0.4s;

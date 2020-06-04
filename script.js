@@ -26,13 +26,14 @@ const minNumber = 10; // smallest possible element in the array (min height of t
 const maxNumber = 600; // biggest possible element in the array (max height of the divs)
 
 // colors
-let sortedColor = "#228B22";
-let normalColor = "#7D7D7D";
-let firstHighlightColor = "#FFA54F";
-let secondHighlightColor = "#EE7621";
-let firstCompareColor = "#4169E1";
-let secondCompareColor = "#00B2EE";
-let thirdHighlightColor = "#EE4000";
+let sortedColor;
+let normalColor;
+let firstHighlightColor;
+let secondHighlightColor;
+let firstCompareColor;
+let secondCompareColor;
+let thirdHighlightColor;
+changeTheme(0);
 
 // Initialize Sliders
 range = $('#elemSlider');
@@ -181,17 +182,19 @@ document.getElementById('stepDiv').onclick = function () {
 };
 
 document.getElementById('defaultThemeDiv').onclick = function() {
+    if(currentlySorting()) return;
     document.body.classList.remove('dark');
     document.body.classList.add('default');
     changeTheme(0);
-    drawArray(algorithmNumber);
+    drawArray(save);
 }
 
 document.getElementById('darkThemeDiv').onclick = function() {
+    if(currentlySorting()) return;
     document.body.classList.remove('default');
     document.body.classList.add('dark');
     changeTheme(1);
-    drawArray(algorithmNumber);
+    drawArray(save);
 }
 
 {
@@ -416,8 +419,9 @@ function bubbleSortStepByStep() {
         }
 
         save[0] = firstIndex;
-		
-        drawArray(a);
+        save[1] = firstIndex+1;
+
+        drawArray([firstIndex, firstIndex+1]);
 		
 		// if elements must be swapped, swap them and increase 'currentStep'
         if (a[1]) {
@@ -428,7 +432,7 @@ function bubbleSortStepByStep() {
         }
     } else {
 		// draw array with swapped elements and add the swapped element to 'changed'
-        drawArray([save[0], save[0]+1]);
+        drawArray([save[1], save[0]]);
         changed.push(save[0]);
         currentStep++;
     }
@@ -453,19 +457,20 @@ function drawArrayBubbleSort(a) {
 			// highlight first index
             color = firstCompareColor;
         } else {
-            if (a[0]+1 === i) {
+            if (a[1] === i) {
 				// highlight second index
                 color = secondCompareColor;
             } else {
-				// every other element got the default color
-                color = normalColor;
+                // if element has been swapped, highlight it with orange color
+                if(changed.includes(i)) {
+                    color = secondHighlightColor;
+                } else {
+                    // every other element got the default color
+                    color = normalColor;
+                }
             }
         }
-	
-		// if element has been swapped, highlight it with orange color
-		if (changed.includes(i)) {
-            color = secondHighlightColor;
-        }
+
         setDiv(div, value, color, false);
     }
 	
@@ -795,7 +800,7 @@ function changeTheme(nr) {
         }
         case 1: {
             sortedColor = "#228B22";
-            normalColor = "#ADADAD";
+            normalColor = "#B5B5B5";
             firstHighlightColor = "#FFA54F";
             secondHighlightColor = "#EE7621";
             firstCompareColor = "#4169E1";
@@ -967,7 +972,7 @@ function setDiv(div, height, farbe, visible) {
     div.style.borderRadius = "0px 0px " + round + "px " + round + "px";
 }
 
-function drawArray(a) {
+function drawArray(a = null) {
     document.getElementById('content').innerHTML = '';
     if(a == null) {
         drawArrayDefault();
