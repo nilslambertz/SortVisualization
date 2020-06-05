@@ -124,6 +124,13 @@ document.getElementById('sortDiv').onclick = function () {
                     endTime = performance.now();
                     break;
                 }
+                // QuickSort
+                case 3: {
+                    startTime = performance.now();
+                    quickSort(0, array.length - 1);
+                    endTime = performance.now();
+                    break;
+                }
 				// wrong algorithmNumber, return
                 default: {
                     alert("Not implemented (yet)");
@@ -154,6 +161,10 @@ document.getElementById('sortDiv').onclick = function () {
                 insertionSortAnimation();
                 break;
             }
+            case 3: {
+                quickSortAnimation();
+                break;
+            }
             default: {
                 alert("Not implemented (yet)");
 				return;
@@ -175,6 +186,7 @@ document.getElementById('stepDiv').onclick = function () {
         case 0: bubbleSortStepByStep(); break;
         case 1: mergeSortStepByStep(); break;
 		case 2: insertionSortStepByStep(); break;
+        case 3: quickSortStepByStep(); break;
         default: {
             alert("Not implemented (yet)");
         }
@@ -397,6 +409,7 @@ function bubbleSortAnimation() {
 
 function bubbleSortStepByStep() {
     if (!swapCreated) {
+        swap = [];
         bubbleSort(); 
         swapCreated = true;
     }
@@ -448,7 +461,7 @@ function drawArrayBubbleSort(a) {
 	
 	// every element before the sorted part of the array
     for (let i = 0; i < sorted; i++) {
-        let color = "";
+        let color = normalColor;
         let div = divs[i];
         let value = array[i];
         document.getElementById('content').appendChild(divs[i]);
@@ -556,6 +569,7 @@ function mergeSortAnimation() {
 
 function mergeSortStepByStep() {	
 	if (!swapCreated) {
+        swap = [];
         mergeSort(0, array.length - 1);
         swapCreated = true;
     }
@@ -609,7 +623,7 @@ function drawArrayMergeSort(a) {
     }
 
     for (let i = 0; i < array.length; i++) {
-        let color = "";
+        let color = normalColor;
         let div = divs[i];
         let value = array[i];
         document.getElementById('content').appendChild(divs[i]);
@@ -675,6 +689,7 @@ function insertionSortAnimation() {
 
 function insertionSortStepByStep() {
 	if (!swapCreated) {
+        swap = [];
         insertionSort();
         swapCreated = true;
     }
@@ -700,7 +715,7 @@ function insertionSortStepByStep() {
 
 function drawArrayInsertionSort(a) {
     for (let i = 0; i < array.length; i++) {
-        let color = "";
+        let color = normalColor;
         let div = divs[i];
         let value = array[i];
         document.getElementById('content').appendChild(divs[i]);
@@ -726,61 +741,116 @@ function quickSort(l, r) {
 		return;
 	}
     let j = partition(l, r);
-    let a = [true, l, j, r];
-	swap.push(a);
 	quickSort(l, j-1);
 	quickSort(j+1, r);
 }
 
 function partition(l, r) {
-    let x = secondArray[l];
-    let i = l+1;
-    let j = r;
-	do {
-		while(i <= r && secondArray[i] <= x) {
-            let a = [false, i, r, l, false];
-            // missing
+    let x = secondArray[r];
+    let i = l;
+    let j = r-1;
+	while(i < j) {
+		while(i < r && secondArray[i] < x) {
+		    // schema: [index1, index2, swap, left, middle, right]
+            let a = [i, 0, false, l, (l+r)/2, r];
+            swap.push(a);
 			i++;
 		}
-		while(j >= l-1 && secondArray[j] > x) {
+		while(j > l && secondArray[j] >= x) {
+            let a = [j, 0, false, l, (l+r)/2, r];
+            swap.push(a);
 			j--
 		}
 		if(i < j) {
             let temp = secondArray[i];
             secondArray[i] = secondArray[j];
             secondArray[j] = temp;
-			i++;
-			j--;
+            let a = [i, j, true, l, (l+r)/2, r];
+            swap.push(a);
+			//i++;
+			//j--;
 		}
- 	} while(i <= j)
-    let temp = secondArray[j];
-    secondArray[j] = secondArray[l];
-    secondArray[l] = temp;
-	return j;
+ 	}
+ 	if(secondArray[i] > x) {
+        let temp = secondArray[i];
+        secondArray[i] = secondArray[r];
+        secondArray[r] = temp;
+        let a = [i, r, true, l, (l+r)/2, r];
+        swap.push(a);
+    }
+	return i;
+}
+
+function quickSortAnimation() {
+    let sortingInterval = setInterval(function () {
+        // if array is sorted or stop is pressed, make buttons visible and return
+        if (checkSorted() === 0 || stop) {
+            changeStyle(true);
+            clearInterval(sortingInterval);
+            return;
+        }
+
+        // do one step
+        quickSortStepByStep();
+    }, interval);
 }
 
 function quickSortStepByStep() {
     if (!swapCreated) {
+        swap = [];
         quickSort(0, array.length - 1);
         swapCreated = true;
     }
+    // schema: [index1, index2, swap, left, middle, right]
 
-    let a = swap.shift();
-    let index = a[0];
-    let pos = a[1];
-	if(pos != null) {
-        let temp = array[index];
-        let j = index;
-		while(array[j-1] > temp) {
-			array[j] = array[j-1];
-			j--;
-		}
-		array[j] = temp;
-	}
-    drawArray(a);
+    if (currentStep % 2 === 0) {
+        let a = swap.shift();
+        let switchElems = a[2];
+        save = a;
+
+        drawArray(a);
+        if (switchElems) {
+            currentStep++;
+        }
+    } else {
+        let temp = array[save[0]];
+        array[save[0]] = array[save[1]];
+        array[save[1]] = temp;
+        drawArray([save[1], save[0], save[2], save[3], save[4], save[5]]);
+        currentStep++;
+    }
+
 
     if (checkSorted() === 0 || stop) {
         changeStyle(true);
+    }
+}
+
+function drawArrayQuickSort(a) {
+    for (let i = 0; i < array.length; i++) {
+        let color = normalColor;
+        let div = divs[i];
+        let value = array[i];
+        document.getElementById('content').appendChild(divs[i]);
+        // schema: [index1, index2, swap, left, middle, right]
+
+        if(a[3] <= i && i <= a[4]) {
+            color = secondHighlightColor;
+        } else {
+            if(a[4] <= i && i <= a[5]) {
+                color = firstHighlightColor;
+            }
+        }
+
+        if(i === a[0]) {
+            color = firstCompareColor;
+        } else {
+            if(i === a[1] && a[2]) {
+                color = secondCompareColor;
+            }
+        }
+
+        setDiv(div, value, color, false);
     }
 }
 
@@ -989,6 +1059,10 @@ function drawArray(a = null) {
         }
         case 2: {
             drawArrayInsertionSort(a);
+            break;
+        }
+        case 3: {
+            drawArrayQuickSort(a);
             break;
         }
         default: {
