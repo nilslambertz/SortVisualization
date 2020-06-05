@@ -7,7 +7,9 @@ let divs = []; // array with all the divs which represent the elements of 'array
 let sorting = false; // is the animation currently playing
 let stop = false; // is the stop button currently pressed
 let swapCreated = false; // has the sort been done by the chosen algorithm
-let algorithmNumber = 0; // which algorithm is chosen, 0 = bubbleSort, 1 = mergeSort, 2 = insertionSort, 3 = quickSort
+let algorithmNumber = 0; /* which algorithm is chosen, 0 = bubbleSort, 1 = mergeSort, 2 = insertionSort, 3 = quickSort,
+                                                        4 = bogoSort
+                            */
 let currentStep = 0; // for two-step-animations, it saves if we are in the first or second step
 let time = 0; // used to save the time it took to sort
 
@@ -22,7 +24,7 @@ let margin = 7; // margin between the divs
 let round = 3; // amout of rounding the corners
 
 // variables concerning the array-range
-const minNumber = 10; // smallest possible element in the array (min height of the divs)
+const minNumber = 5; // smallest possible element in the array (min height of the divs)
 const maxNumber = 600; // biggest possible element in the array (max height of the divs)
 
 // colors
@@ -131,6 +133,10 @@ document.getElementById('sortDiv').onclick = function () {
                     endTime = performance.now();
                     break;
                 }
+                // BogoSort
+                case 4: {
+                    break;
+                }
 				// wrong algorithmNumber, return
                 default: {
                     alert("Not implemented (yet)");
@@ -165,6 +171,10 @@ document.getElementById('sortDiv').onclick = function () {
                 quickSortAnimation();
                 break;
             }
+            case 4: {
+                bogoSortAnimation(10000);
+                break;
+            }
             default: {
                 alert("Not implemented (yet)");
 				return;
@@ -187,6 +197,7 @@ document.getElementById('stepDiv').onclick = function () {
         case 1: mergeSortStepByStep(); break;
 		case 2: insertionSortStepByStep(); break;
         case 3: quickSortStepByStep(); break;
+        case 4: bogoSortStepByStep(); break;
         default: {
             alert("Not implemented (yet)");
         }
@@ -345,6 +356,26 @@ document.getElementById("quickSortDiv").onclick = function() {
     drawArray();
 }
 
+document.getElementById('bogoSortDiv').onclick = function () {
+    // if currently sorting, return
+    if (currentlySorting()) {
+        return;
+    }
+
+    changed = [];
+    swapCreated = false;
+    currentStep = 0;
+    swap = [];
+
+    // underline bubbleSort, change 'algorithmNumber' and draw the 'array'
+    for (let i of document.getElementsByClassName("leftNavElem")) {
+        i.style.textDecoration = "none";
+    }
+    document.getElementById("bogoSortDiv").style.textDecoration = "underline";
+    algorithmNumber = 4;
+    drawArray();
+}
+
 // returns the lowest index of an array, where all following elements are sorted
 function checkSorted(a = array) {
     let firstSorted = 0;
@@ -477,9 +508,6 @@ function drawArrayBubbleSort(a) {
                 // if element has been swapped, highlight it with orange color
                 if(changed.includes(i)) {
                     color = secondHighlightColor;
-                } else {
-                    // every other element got the default color
-                    color = normalColor;
                 }
             }
         }
@@ -634,8 +662,6 @@ function drawArrayMergeSort(a) {
             } else {
                 if (a[3] <= i && i <= a[4]) {
                     color = secondHighlightColor;
-                } else {
-                    color = normalColor;
                 }
             }
         } else {
@@ -644,8 +670,6 @@ function drawArrayMergeSort(a) {
 			} else {
 				if (a[1] === i) {
                     color = secondCompareColor;
-				} else {
-                    color = normalColor;
 				}
 			}
         }
@@ -725,8 +749,6 @@ function drawArrayInsertionSort(a) {
         } else {
 			if(a[1] === i) {
                 color = thirdHighlightColor;
-			} else {
-                color = normalColor;
 			}
         }
         setDiv(div, value, color, false);
@@ -801,7 +823,6 @@ function quickSortStepByStep() {
         quickSort(0, array.length - 1);
         swapCreated = true;
     }
-    // schema: [index1, index2, swap, left, middle, right]
 
     if (currentStep % 2 === 0) {
         let a = swap.shift();
@@ -851,6 +872,30 @@ function drawArrayQuickSort(a) {
         }
 
         setDiv(div, value, color, false);
+    }
+}
+
+function bogoSortAnimation(numberOfShuffles) {
+    let i = 0;
+    let sortingInterval = setInterval(function () {
+        // if array is sorted or stop is pressed, make buttons visible and return
+        if (checkSorted() === 0 || stop || i >= numberOfShuffles) {
+            changeStyle(true);
+            clearInterval(sortingInterval);
+            return;
+        }
+
+        bogoSortStepByStep();
+        i++;
+    }, interval);
+}
+
+function bogoSortStepByStep() {
+    array = shuffleArray(array);
+    drawArray();
+
+    if (checkSorted() === 0 || stop) {
+        changeStyle(true);
     }
 }
 
@@ -954,6 +999,10 @@ function createArray(elems) {
         elems = maxNumber;
         console.log("Too many elements. Elements set to " + elems);
     }
+    if(elems < minNumber) {
+        elems = minNumber;
+        console.log("Not enough elements. Elements set to " + elems);
+    }
 
     changed = [];
     if (elems < 20) {
@@ -1016,7 +1065,7 @@ function createArray(elems) {
 		a[i] = tempArray[index];
 		tempArray.splice(index, 1);
 	}
-	
+
 	for(let i = 0; i < elems; i++) {
         let temp = document.createElement('div');
         temp.setAttribute('id', i + "");
@@ -1027,6 +1076,16 @@ function createArray(elems) {
     divs = d;
     drawArray();
     secondArray = array.slice(0);
+}
+
+function shuffleArray(a) {
+    for (let i = a.length - 1; i > 0; i--) {
+        let j = Math.floor(Math.random() * (i + 1));
+        let x = a[i];
+        a[i] = a[j];
+        a[j] = x;
+    }
+    return a;
 }
 
 function setDiv(div, height, farbe, visible) {
@@ -1044,7 +1103,7 @@ function setDiv(div, height, farbe, visible) {
 
 function drawArray(a = null) {
     document.getElementById('content').innerHTML = '';
-    if(a == null) {
+    if(a == null || checkSorted() == 0) {
         drawArrayDefault();
         return;
     }
