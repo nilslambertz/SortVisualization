@@ -1,8 +1,5 @@
-/* color variables */
-
 $navHeight: 50px;
 $navBorder: 1px;
-$background: red;
 $contentPadding: 20px;
 
 .default {
@@ -43,17 +40,11 @@ html, body {
   width: 100%;
   margin: 0;
   padding: 0;
-  font-family: Arial, serif;
-  font-family: 'Roboto', sans-serif;
+  font-family: 'Roboto', Arial, sans-serif;
   background: linear-gradient(to right, var(--backgroundGradientLeft), var(--backgroundGradientRight));
   color: var(--fontColorNav);
   font-size: 30px;
-  -webkit-touch-callout: none;
-  -webkit-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
   user-select: none;
-  cursor: default;
 }
 
 /* title area */
@@ -87,8 +78,7 @@ html, body {
   border-right: $navBorder solid white;
   line-height: 50px;
   height: $navHeight;
-  padding-right: 10px;
-  padding-left: 10px;
+  padding: 0 10px;
   vertical-align: middle;
   float: left;
   transition: background-color 0.25s, opacity 0.4s;
@@ -144,7 +134,7 @@ html, body {
 }
 
 .notSorting:hover {
-  background-color: #32CD32;
+  background-color: #3bb53b;
 }
 
 .sorting {
