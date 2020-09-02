@@ -1,4 +1,4 @@
-function insertionSort() {
+/*function insertionSort() {
     for(let i = 0; i < secondArray.length; i++) {
         swap.push([i]);
         let temp = secondArray[i];
@@ -70,4 +70,4 @@ function drawArrayInsertionSort(a) {
         }
         setDiv(div, value, color, false);
     }
-}
+}*/
