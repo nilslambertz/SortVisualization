@@ -597,13 +597,13 @@ function drawArrayDefault() {
     }
 }
 
-function testSort(v = 100, l = 100) {
+function testSort(l = 100, v = 100) {
     if(l > 600) {
-        console.log("Maximal 600 Elemente m" + unescape("%F6") + "glich!");
+        console.log("Maximum array-length is 600!");
         l = 600;
     }
     if(l < 2) {
-        console.log("Mindestens zwei Elemente erforderlich!");
+        console.log("Minimum array-length is 2!");
         l = 2;
     }
 
@@ -611,7 +611,7 @@ function testSort(v = 100, l = 100) {
     let endTime;
     let time;
     let correct;
-    console.log("Teste Algorithmen mit " + v + " Versuchen und Array der Gr" + unescape("%F6") + unescape("%DF") + "e " + l);
+    console.log("Starting test with " + v + " arrays per algorithm and array-length " + l);
 
     console.log("\t1. BubbleSort");
     correct = 0;
@@ -623,23 +623,10 @@ function testSort(v = 100, l = 100) {
     }
     endTime = performance.now();
     time = endTime - startTime;
-    console.log("\t\t" + correct + " von " + v + " Tests korrekt!");
-    console.log("\t\tBen" + unescape("%F6") + "tigte Zeit: " + time.toFixed(2) + "ms");
+    console.log("\t\t" + correct + " out of " + v + " tests correct!");
+    console.log("\t\tComputation time: " + time.toFixed(2) + "ms");
 
-    console.log("\t2. MergeSort");
-    correct = 0;
-    startTime = performance.now();
-    for (let i = 0; i < v; i++) {
-        createArray(l);
-        mergeSort(0, array.length - 1);
-        correct += (checkSorted(secondArray) === 0) ? 1 : 0;
-    }
-    endTime = performance.now();
-    time = endTime - startTime;
-    console.log("\t\t" + correct + " von " + v + " Tests korrekt!");
-    console.log("\t\tBen" + unescape("%F6") + "tigte Zeit: " + time.toFixed(2) + "ms");
-
-    console.log("\t3. InsertionSort");
+    console.log("\t2. InsertionSort");
     correct = 0;
     startTime = performance.now();
     for (let i = 0; i < v; i++) {
@@ -649,8 +636,34 @@ function testSort(v = 100, l = 100) {
     }
     endTime = performance.now();
     time = endTime - startTime;
-    console.log("\t\t" + correct + " von " + v + " Tests korrekt!");
-    console.log("\t\tBen" + unescape("%F6") + "tigte Zeit: " + time.toFixed(2) + "ms");
+    console.log("\t\t" + correct + " out of " + v + " tests correct!");
+    console.log("\t\tComputation time: " + time.toFixed(2) + "ms");
+
+    console.log("\t3. MergeSort");
+    correct = 0;
+    startTime = performance.now();
+    for (let i = 0; i < v; i++) {
+        createArray(l);
+        mergeSort(0, array.length - 1);
+        correct += (checkSorted(secondArray) === 0) ? 1 : 0;
+    }
+    endTime = performance.now();
+    time = endTime - startTime;
+    console.log("\t\t" + correct + " out of " + v + " tests correct!");
+    console.log("\t\tComputation time: " + time.toFixed(2) + "ms");
+
+    console.log("\t4. QuickSort");
+    correct = 0;
+    startTime = performance.now();
+    for (let i = 0; i < v; i++) {
+        createArray(l);
+        quickSort(0, l-1);
+        correct += (checkSorted(secondArray) === 0) ? 1 : 0;
+    }
+    endTime = performance.now();
+    time = endTime - startTime;
+    console.log("\t\t" + correct + " out of " + v + " tests correct!");
+    console.log("\t\tComputation time: " + time.toFixed(2) + "ms");
 	
-    return "Test beendet!";
+    return "Test finished!";
 }
