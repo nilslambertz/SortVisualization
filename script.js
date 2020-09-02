@@ -687,7 +687,7 @@ function insertionSort() {
 function insertionSortAnimation() {
     let sortingInterval = setInterval(function () {
         // if array is sorted or stop is pressed, make buttons visible and return
-        if (checkSorted() === 0 || stop) {
+        if (swap.length === 0 || stop) {
             changeStyle(true);
             clearInterval(sortingInterval);
             return;
