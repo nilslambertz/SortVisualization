@@ -1,6 +1,6 @@
 /* color variables */
 .default {
-  --backgroundGradientLeft: #1C86EE;
+  --backgroundGradientLeft: #2187ec;
   --backgroundGradientRight: #4169E1;
   --contentGradientLeft: #E5E5E5;
   --contentGradientRight: #B5B5B5;
@@ -50,6 +50,12 @@ html, body {
   color: var(--fontColorLeftNav);
   font-weight: bold;
   border-right: 1px solid white;
+  transition: background-color 0.3s;
+}
+
+#title:hover {
+  cursor: pointer;
+  background-color: var(--buttonHoverColor);
 }
 
 /* nav-bar at the top */

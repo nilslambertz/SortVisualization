@@ -6,7 +6,7 @@ $background: red;
 $contentPadding: 20px;
 
 .default {
-  --backgroundGradientLeft: #1C86EE;
+  --backgroundGradientLeft: #2187ec;
   --backgroundGradientRight: #4169E1;
 
   --contentGradientLeft: #E5E5E5;
@@ -64,6 +64,12 @@ html, body {
   color: var(--fontColorLeftNav);
   font-weight: bold;
   border-right: $navBorder solid white;
+  transition: background-color 0.3s;
+}
+
+#title:hover {
+  cursor: pointer;
+  background-color: var(--buttonHoverColor);
 }
 
 /* nav-bar at the top */
