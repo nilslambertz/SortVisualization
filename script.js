@@ -24,8 +24,11 @@ let margin = 7; // margin between the divs
 let round = 3; // amout of rounding the corners
 
 // variables concerning the array-range
-const minNumber = 5; // smallest possible element in the array (min height of the divs)
-const maxNumber = 600; // biggest possible element in the array (max height of the divs)
+let minNumber = 5; // smallest possible element in the array (min height of the divs)
+let maxNumber = 600; // biggest possible element in the array (max height of the divs)
+
+// trys for bogosort
+let bogoTrys = 10000;
 
 // colors
 let sortedColor;
@@ -35,7 +38,7 @@ let secondHighlightColor;
 let firstCompareColor;
 let secondCompareColor;
 let thirdHighlightColor;
-changeTheme(0);
+changeTheme(0); // initializing with default-theme
 
 // Initialize Sliders
 range = $('#elemSlider');
@@ -45,6 +48,8 @@ speed = $('#speedSlider');
 // initializing site
 let interval = 0;
 $('document').ready(function() {
+    minNumber = parseInt(document.getElementById('elemSlider').min);
+    maxNumber = parseInt(document.getElementById('elemSlider').max);
     document.body.classList.add('default');
     rangeSlider();
     createArray(parseInt(document.getElementById("elemSlider").value));
@@ -82,7 +87,8 @@ document.getElementById('sortDiv').onclick = function () {
     secondArray = array.slice(0);
 	
 	// update interval
-    interval = parseInt(document.getElementById("speedSlider").max) - parseInt(document.getElementById("speedSlider").value);
+    interval = parseInt(document.getElementById("speedSlider").max)
+        - parseInt(document.getElementById("speedSlider").value);
 	
 	// if array is already sorted, do nothing
     if (checkSorted() === 0) {
@@ -135,6 +141,7 @@ document.getElementById('sortDiv').onclick = function () {
                 }
                 // BogoSort
                 case 4: {
+                    swap[0] = bogoTrys;
                     break;
                 }
 				// wrong algorithmNumber, return
@@ -159,7 +166,7 @@ document.getElementById('sortDiv').onclick = function () {
                 break;
             }
             case 1: {
-                interval += 60;
+                interval += 30;
                 mergeSortAnimation();
                 break;
             }
@@ -172,7 +179,7 @@ document.getElementById('sortDiv').onclick = function () {
                 break;
             }
             case 4: {
-                bogoSortAnimation(10000);
+                bogoSortAnimation();
                 break;
             }
             default: {
@@ -218,62 +225,6 @@ document.getElementById('darkThemeDiv').onclick = function() {
     document.body.classList.add('dark');
     changeTheme(1);
     drawArray(save);
-}
-
-{
-/*
-document.getElementById('instantSortDiv').onclick = function () {
-	// if currently sorting
-    if (currentlySorting()) {
-        return;
-    }
-
-    secondArray = array.slice(0);
-    var startTime = 0;
-    var endTime = 0;
-    time = 0;
-	
-	// sort 'secondArray' and copy it into 'array'
-    switch (algorithmNumber) {
-        case 0: {
-            startTime = performance.now();
-            bubbleSort();
-            endTime = performance.now();
-            array = secondArray.slice(0);
-            break;
-        }
-        case 1: {
-            startTime = performance.now();
-            mergeSort(0, array.length - 1);
-            endTime = performance.now();
-            array = secondArray.slice(0);
-            break;
-        }
-        case 2: {
-            startTime = performance.now();
-            insertionSort();
-            endTime = performance.now();
-            array = secondArray.slice(0);
-            break;
-        }
-		case 3: {
-			startTime = performance.now();
-            quickSort(0, array.length - 1);
-            endTime = performance.now();
-            array = secondArray.slice(0);
-            break;
-		}
-        default: {
-            alert("Not implemented (yet)");
-        }
-    }
-	
-	// draw 'array'
-    drawArray();
-    time = endTime - startTime;
-    document.getElementById("sortingTimeSpan").innerHTML = time.toFixed(2) + "ms";
-}
-*/
 }
 
 document.getElementById('bubbleSortDiv').onclick = function () {
@@ -402,502 +353,6 @@ document.getElementById('createArrayDiv').onclick = function () {
     createArray(parseInt(value));
 	changeStyle(true);
 };
-
-
-// Bubblesort
-
-function bubbleSort() {
-    for (let n = secondArray.length; n > 1; n--) {
-        for (let i = 0; i < n - 1; i++) {
-			// schema: [firstIndex, swapNeeded]
-            let a = [i, false];
-            if (secondArray[i] > secondArray[i + 1]) {
-                let temp = secondArray[i];
-                secondArray[i] = secondArray[i + 1];
-                secondArray[i + 1] = temp;
-                a = [i, true];
-            }
-            swap.push(a);
-        }
-    }
-
-    swapCreated = true;
-}
-
-function bubbleSortAnimation() {
-    let sortingInterval = setInterval(function () {
-		// if array is sorted or stop is pressed, make buttons visible and return
-        if (checkSorted() === 0 || stop) {
-            changeStyle(true);
-            clearInterval(sortingInterval);
-            return;
-        }
-		
-		// do one step 
-		bubbleSortStepByStep();
-    }, interval);
-}
-
-function bubbleSortStepByStep() {
-    if (!swapCreated) {
-        swap = [];
-        bubbleSort(); 
-        swapCreated = true;
-    }
-
-	// if elements must not be swapped
-    if (currentStep % 2 === 0) {
-		// get the next element
-        let a = swap.shift();
-		
-		// if swap is empty, but the array still isn't sorted
-		if(a == null) {
-			alert("Something went wrong!");
-			return;
-		}
-        let firstIndex = a[0];
-
-        // if next iteration
-        if (firstIndex < save[0]) {
-            changed = [];
-        }
-
-        save[0] = firstIndex;
-        save[1] = firstIndex+1;
-
-        drawArray([firstIndex, firstIndex+1]);
-		
-		// if elements must be swapped, swap them and increase 'currentStep'
-        if (a[1]) {
-            let temp = array[firstIndex];
-            array[firstIndex] = array[firstIndex+1];
-            array[firstIndex+1] = temp;
-            currentStep++;
-        }
-    } else {
-		// draw array with swapped elements and add the swapped element to 'changed'
-        drawArray([save[1], save[0]]);
-        changed.push(save[0]);
-        currentStep++;
-    }
-
-	// if the array is sorted
-    if (checkSorted() === 0 || stop) {
-        changeStyle(true);
-    }
-}
-
-function drawArrayBubbleSort(a) {
-    let sorted = checkSorted();
-	
-	// every element before the sorted part of the array
-    for (let i = 0; i < sorted; i++) {
-        let color = normalColor;
-        let div = divs[i];
-        let value = array[i];
-        document.getElementById('content').appendChild(divs[i]);
-
-        if (a[0] === i) {
-			// highlight first index
-            color = firstCompareColor;
-        } else {
-            if (a[1] === i) {
-				// highlight second index
-                color = secondCompareColor;
-            } else {
-                // if element has been swapped, highlight it with orange color
-                if(changed.includes(i)) {
-                    color = secondHighlightColor;
-                }
-            }
-        }
-
-        setDiv(div, value, color, false);
-    }
-	
-	// every already sorted element is green
-    for (let i = sorted; i < array.length; i++) {
-        document.getElementById('content').appendChild(divs[i]);
-        setDiv(divs[i], array[i], sortedColor);
-    }
-}
-
-
-// Mergesort
-
-function mergeSort(l, r) {
-    if (r - l === 0) {
-        // nothing to do
-    } else {
-        if (r - l === 1) {
-			// schema: [firstIndex, secondIndex, needToBeSwapped, null, null, null, false]
-            let a = [l, r, false, null, null, null, false];
-            if (secondArray[l] > secondArray[r]) {
-                let temp = secondArray[l];
-                secondArray[l] = secondArray[r];
-                secondArray[r] = temp;
-                a = [l, r, true, null, null, null, false];
-            }
-            swap.push(a);
-        } else {
-            let i = Math.floor((r + l) / 2);
-			// schema: [null, null, false, leftBorder, rightBorder, mid, false]
-			let a = [null, null, false, l, r, i, false];
-			swap.push(a);
-            mergeSort(l, i-1);
-            mergeSort(i, r);
-            merge(l, r, i);
-        }
-    }
-}
-
-function merge(l, r, mid) {
-    let j = mid;
-    while (j <= r) {
-		// schema: [firstIndex, SecondIndex, false, leftBorder, rightBorder, middle, moved];
-        let a = [j, j-1, false, l, r, j+1, false];
-		// if smallest element of the second half is smaller than the biggest element of the first half
-        if (secondArray[j] < secondArray[j - 1]) {
-            let firstBigger = l;
-			// find first bigger element in the second half
-            for (let x = l; x < j; x++) {
-                if (secondArray[x] > secondArray[j]) {
-                    firstBigger = x;
-                    break;
-                } 
-            }
-			// move every element one place "to the right" and put the current element in the empty space
-            for (let x = j; x > firstBigger; x--) {
-                let temp = secondArray[x];
-                secondArray[x] = secondArray[x - 1];
-                secondArray[x - 1] = temp;
-            }
-			// now we moved the elements
-            a = [firstBigger, j, false, l, r, j+1, true];
-        }
-        swap.push(a);
-        j++;
-    }
-
-}
-
-function mergeSortAnimation() {
-    let sortingInterval = setInterval(function () {
-		// if array is sorted or stop is pressed, make buttons visible and return
-        if (checkSorted() === 0 || stop) {
-            clearInterval(sortingInterval);
-            changeStyle(true);
-            return;
-        }
-
-		// do one step 
-        mergeSortStepByStep();
-    }, interval);
-}
-
-function mergeSortStepByStep() {	
-	if (!swapCreated) {
-        swap = [];
-        mergeSort(0, array.length - 1);
-        swapCreated = true;
-    }
-	
-	if (currentStep % 2 === 0) {
-        let a = swap.shift();
-        let firstIndex = a[0];
-        let secondIndex = a[1];
-        let left = a[3];
-        let mid = a[4];
-        let right = a[5];
-        save[0] = firstIndex;
-        save[1] = secondIndex;
-		save[2] = left;
-		save[3] = mid;
-		save[4] = right;
-		
-		
-        if (a[6]) {
-            for (let x = secondIndex; x > firstIndex; x--) {
-                let temp = array[x];
-                array[x] = array[x - 1];
-                array[x - 1] = temp;
-            }
-            drawArray([null, null, a[3], a[5], a[4]]);
-        } else {
-            drawArray([a[0], a[1], a[3], a[5], a[4]]);
-            if (a[2]) {
-                currentStep++;
-            }
-		}
-    } else {
-        let temp = array[save[0]];
-        array[save[0]] = array[save[1]];
-        array[save[1]] = temp;
-        drawArray([save[1], save[0], save[2], save[4], save[3]]);
-        currentStep++;
-    }
-	
-		
-	if (checkSorted() === 0 || stop) {
-        changeStyle(true);
-    }
-}
-
-function drawArrayMergeSort(a) {
-    let sorted = checkSorted();
-    if(sorted === 0) {
-        drawArrayDefault();
-        return;
-    }
-
-    for (let i = 0; i < array.length; i++) {
-        let color = normalColor;
-        let div = divs[i];
-        let value = array[i];
-        document.getElementById('content').appendChild(divs[i]);
-		
-		if (a[2] != null) {
-            if (a[2] <= i && i < a[3]) {
-                color = firstHighlightColor;
-            } else {
-                if (a[3] <= i && i <= a[4]) {
-                    color = secondHighlightColor;
-                }
-            }
-        } else {
-			if (a[0] === i) {
-                color = firstCompareColor;
-			} else {
-				if (a[1] === i) {
-                    color = secondCompareColor;
-				}
-			}
-        }
-		
-		setDiv(div, value, color, false);
-    }
-}
-
-
-// InsertionSort
-
-function insertionSort() {
-    for(let i = 0; i < secondArray.length; i++) {
-		swap.push([i]);
-        let temp = secondArray[i];
-        let j = i;
-		// find correct position in the part of the array that is left from the current element and put it there
-        while(j > 0 && secondArray[j-1] > temp) {
-            secondArray[j] = secondArray[j-1];
-            j--;
-        }
-		swap.push([i, j]);
-        secondArray[j] = temp;
-    }
-    swapCreated = true;
-}
-
-function insertionSortAnimation() {
-    let sortingInterval = setInterval(function () {
-		// if array is sorted or stop is pressed, make buttons visible and return
-        if (checkSorted() === 0 || stop) {
-            changeStyle(true);
-            clearInterval(sortingInterval);
-            return;
-        }
-
-        // do one step 
-        insertionSortStepByStep();
-    }, interval);
-}
-
-function insertionSortStepByStep() {
-	if (!swapCreated) {
-        swap = [];
-        insertionSort();
-        swapCreated = true;
-    }
-
-    let a = swap.shift();
-    let index = a[0];
-    let pos = a[1];
-	if(pos != null) {
-        let temp = array[index];
-        let j = index;
-		while(array[j-1] > temp) {
-			array[j] = array[j-1];
-			j--;
-		}
-		array[j] = temp;
-	}
-    drawArray(a);
-
-    if (checkSorted() === 0 || stop) {
-        changeStyle(true);
-    }
-}
-
-function drawArrayInsertionSort(a) {
-    for (let i = 0; i < array.length; i++) {
-        let color = normalColor;
-        let div = divs[i];
-        let value = array[i];
-        document.getElementById('content').appendChild(divs[i]);
-
-        if (a[0] === i && a[1] !== i && a[1] == null) {
-            color = firstCompareColor;
-        } else {
-			if(a[1] === i) {
-                color = thirdHighlightColor;
-			}
-        }
-        setDiv(div, value, color, false);
-    }
-}	
-
-
-// QuickSort 
-
-function quickSort(l, r) {
-	if(l >= r) {
-		return;
-	}
-    let j = partition(l, r);
-	quickSort(l, j-1);
-	quickSort(j+1, r);
-}
-
-function partition(l, r) {
-    let x = secondArray[r];
-    let i = l;
-    let j = r-1;
-	while(i < j) {
-		while(i < r && secondArray[i] < x) {
-		    // schema: [index1, index2, swap, left, middle, right]
-            let a = [i, 0, false, l, (l+r)/2, r];
-            swap.push(a);
-			i++;
-		}
-		while(j > l && secondArray[j] >= x) {
-            let a = [j, 0, false, l, (l+r)/2, r];
-            swap.push(a);
-			j--
-		}
-		if(i < j) {
-            let temp = secondArray[i];
-            secondArray[i] = secondArray[j];
-            secondArray[j] = temp;
-            let a = [i, j, true, l, (l+r)/2, r];
-            swap.push(a);
-			//i++;
-			//j--;
-		}
- 	}
- 	if(secondArray[i] > x) {
-        let temp = secondArray[i];
-        secondArray[i] = secondArray[r];
-        secondArray[r] = temp;
-        let a = [i, r, true, l, (l+r)/2, r];
-        swap.push(a);
-    }
-	return i;
-}
-
-function quickSortAnimation() {
-    let sortingInterval = setInterval(function () {
-        // if array is sorted or stop is pressed, make buttons visible and return
-        if (checkSorted() === 0 || stop) {
-            changeStyle(true);
-            clearInterval(sortingInterval);
-            return;
-        }
-
-        // do one step
-        quickSortStepByStep();
-    }, interval);
-}
-
-function quickSortStepByStep() {
-    if (!swapCreated) {
-        swap = [];
-        quickSort(0, array.length - 1);
-        swapCreated = true;
-    }
-
-    if (currentStep % 2 === 0) {
-        let a = swap.shift();
-        let switchElems = a[2];
-        save = a;
-
-        drawArray(a);
-        if (switchElems) {
-            currentStep++;
-        }
-    } else {
-        let temp = array[save[0]];
-        array[save[0]] = array[save[1]];
-        array[save[1]] = temp;
-        drawArray([save[1], save[0], save[2], save[3], save[4], save[5]]);
-        currentStep++;
-    }
-
-
-    if (checkSorted() === 0 || stop) {
-        changeStyle(true);
-    }
-}
-
-function drawArrayQuickSort(a) {
-    for (let i = 0; i < array.length; i++) {
-        let color = normalColor;
-        let div = divs[i];
-        let value = array[i];
-        document.getElementById('content').appendChild(divs[i]);
-        // schema: [index1, index2, swap, left, middle, right]
-
-        if(a[3] <= i && i <= a[4]) {
-            color = secondHighlightColor;
-        } else {
-            if(a[4] <= i && i <= a[5]) {
-                color = firstHighlightColor;
-            }
-        }
-
-        if(i === a[0]) {
-            color = firstCompareColor;
-        } else {
-            if(i === a[1] && a[2]) {
-                color = secondCompareColor;
-            }
-        }
-
-        setDiv(div, value, color, false);
-    }
-}
-
-function bogoSortAnimation(numberOfShuffles) {
-    let i = 0;
-    let sortingInterval = setInterval(function () {
-        // if array is sorted or stop is pressed, make buttons visible and return
-        if (checkSorted() === 0 || stop || i >= numberOfShuffles) {
-            changeStyle(true);
-            clearInterval(sortingInterval);
-            return;
-        }
-
-        bogoSortStepByStep();
-        i++;
-    }, interval);
-}
-
-function bogoSortStepByStep() {
-    array = shuffleArray(array);
-    drawArray();
-
-    if (checkSorted() === 0 || stop) {
-        changeStyle(true);
-    }
-}
 
 // other functions
 
@@ -1103,7 +558,7 @@ function setDiv(div, height, farbe, visible) {
 
 function drawArray(a = null) {
     document.getElementById('content').innerHTML = '';
-    if(a == null || checkSorted() == 0) {
+    if(a == null || checkSorted() === 0) {
         drawArrayDefault();
         return;
     }
