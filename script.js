@@ -719,7 +719,7 @@ function insertionSortStepByStep() {
     }
     drawArray(a);
 
-    if (checkSorted() === 0 || stop) {
+    if (swap.length === 0 || stop) {
         changeStyle(true);
     }
 }
