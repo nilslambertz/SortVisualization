@@ -102,6 +102,7 @@ html, body {
   width: 250px;
   color: var(--fontColorLeftNav);
   cursor: default;
+  overflow: auto;
   line-height: $navHeight;
   float: left;
 }
