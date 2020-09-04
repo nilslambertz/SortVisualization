@@ -1,13 +1,15 @@
 function bubbleSort() {
     for (let n = secondArray.length; n > 1; n--) {
         for (let i = 0; i < n - 1; i++) {
-            // schema: [firstIndex, swapNeeded]
-            let a = [i, false];
+            let a = {
+                firstIndex: i,
+                swapElements: false
+            }
             if (secondArray[i] > secondArray[i + 1]) {
                 let temp = secondArray[i];
                 secondArray[i] = secondArray[i + 1];
                 secondArray[i + 1] = temp;
-                a = [i, true];
+                a.swapElements = true;
             }
             swap.push(a);
         }
@@ -18,9 +20,8 @@ function bubbleSort() {
 
 function bubbleSortAnimation() {
     let sortingInterval = setInterval(function () {
-        // if array is sorted or stop is pressed, make buttons visible and return
-        if (checkSorted() === 0 || stop) {
-            changeStyle(true);
+        if (swap.length === 0 || stop) {
+            endAnimation();
             clearInterval(sortingInterval);
             return;
         }
@@ -31,80 +32,62 @@ function bubbleSortAnimation() {
 }
 
 function bubbleSortStepByStep() {
-    if (!swapCreated) {
-        swap = [];
-        bubbleSort();
-        swapCreated = true;
-    }
-
     // if elements must not be swapped
     if (currentStep % 2 === 0) {
         // get the next element
         let a = swap.shift();
-
-        let firstIndex = a[0];
+        let firstIndex = a.firstIndex;
 
         // if next iteration
         if (firstIndex < save[0]) {
-            changed = [];
+            divs[save[1]].classList.add("sortedElem");
         }
 
         save[0] = firstIndex;
         save[1] = firstIndex+1;
 
-        drawArray(save);
+      //  drawArray(save);
+        drawBubbleSort({
+            firstIndex: firstIndex,
+            swapped: false
+        });
 
         // if elements must be swapped, swap them and increase 'currentStep'
-        if (a[1]) {
+        if (a.swapElements) {
             let temp = array[firstIndex];
             array[firstIndex] = array[firstIndex+1];
             array[firstIndex+1] = temp;
             currentStep++;
         }
     } else {
-        // draw array with swapped elements and add the swapped element to 'changed'
-        drawArray([save[1], save[0]]);
-        changed.push(save[0]);
+        // draw array with swapped elements
+        let x = divs[save[1]];
+        divs[save[1]] = divs[save[0]];
+        divs[save[0]] = x;
+        drawBubbleSort({
+            firstIndex: save[0],
+            swapped: true
+        });
         currentStep++;
-    }
-
-    // if the array is sorted
-    if (checkSorted() === 0 || stop) {
-        changeStyle(true);
     }
 }
 
-function drawArrayBubbleSort(a) {
-    let sorted = checkSorted();
+function drawBubbleSort(o) {
+    let i = o.firstIndex;
+    if(currentFirstHighlight) currentFirstHighlight.classList.remove("firstHighlight");
+    if(currentSecondHighlight) currentSecondHighlight.classList.remove("secondHighlight");
 
-    // every element before the sorted part of the array
-    for (let i = 0; i < sorted; i++) {
-        let color = normalColor;
-        let div = divs[i];
-        let value = array[i];
-        document.getElementById('content').appendChild(divs[i]);
-
-        if (a[0] === i) {
-            // highlight first index
-            color = firstCompareColor;
-        } else {
-            if (a[1] === i) {
-                // highlight second index
-                color = secondCompareColor;
-            } else {
-                // if element has been swapped, highlight it with orange color
-                if(changed.includes(i)) {
-                    color = secondHighlightColor;
-                }
-            }
-        }
-
-        setDiv(div, value, color, false);
+    if(o.swapped) {
+        divs[i].classList.add("firstHighlight");
+        currentFirstHighlight = divs[i];
+        divs[i+1].classList.add("secondHighlight");
+        currentSecondHighlight = divs[i+1];
+    } else {
+        divs[i+1].classList.add("firstHighlight");
+        currentFirstHighlight = divs[i+1];
+        divs[i].classList.add("secondHighlight");
+        currentSecondHighlight = divs[i];
     }
-
-    // every already sorted element is green
-    for (let i = sorted; i < array.length; i++) {
-        document.getElementById('content').appendChild(divs[i]);
-        setDiv(divs[i], array[i], sortedColor);
-    }
+    let content = document.getElementById("content");
+    content.insertBefore(divs[i], divs[i+1]);
 }

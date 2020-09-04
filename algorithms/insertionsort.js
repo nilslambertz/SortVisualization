@@ -1,6 +1,8 @@
-/*function insertionSort() {
+function insertionSort() {
     for(let i = 0; i < secondArray.length; i++) {
-        swap.push([i]);
+        swap.push({
+            firstIndex: i
+        });
         let temp = secondArray[i];
         let j = i;
         // find correct position in the part of the array that is left from the current element and put it there
@@ -8,7 +10,10 @@
             secondArray[j] = secondArray[j-1];
             j--;
         }
-        swap.push([i, j]);
+        swap.push({
+            firstIndex: i,
+            correctPosition: j
+        });
         secondArray[j] = temp;
     }
     swapCreated = true;
@@ -16,9 +21,8 @@
 
 function insertionSortAnimation() {
     let sortingInterval = setInterval(function () {
-        // if array is sorted or stop is pressed, make buttons visible and return
-        if (checkSorted() === 0 || stop) {
-            changeStyle(true);
+        if (swap.length === 0 || stop) {
+            endAnimation();
             clearInterval(sortingInterval);
             return;
         }
@@ -29,45 +33,39 @@ function insertionSortAnimation() {
 }
 
 function insertionSortStepByStep() {
-    if (!swapCreated) {
-        swap = [];
-        insertionSort();
-        swapCreated = true;
-    }
-
     let a = swap.shift();
-    let index = a[0];
-    let pos = a[1];
-    if(pos != null) {
-        let temp = array[index];
-        let j = index;
-        while(array[j-1] > temp) {
-            array[j] = array[j-1];
-            j--;
-        }
-        array[j] = temp;
-    }
-    drawArray(a);
-
-    if (checkSorted() === 0 || stop) {
-        changeStyle(true);
-    }
+    drawInsertionSort(a);
 }
 
-function drawArrayInsertionSort(a) {
-    for (let i = 0; i < array.length; i++) {
-        let color = normalColor;
-        let div = divs[i];
-        let value = array[i];
-        document.getElementById('content').appendChild(divs[i]);
+function drawInsertionSort(o) {
+    let firstIndex = o.firstIndex;
+    let correctPosition = o.correctPosition;
 
-        if (a[0] === i && a[1] !== i && a[1] == null) {
-            color = firstCompareColor;
-        } else {
-            if(a[1] === i) {
-                color = thirdHighlightColor;
+    if(currentFirstHighlight) currentFirstHighlight.classList.remove("firstHighlight");
+    if(currentSecondHighlight) currentSecondHighlight.classList.remove("secondHighlight");
+
+    if(correctPosition !== undefined) {
+        if(correctPosition !== firstIndex) {
+            document.getElementById("content").insertBefore(divs[firstIndex], divs[correctPosition]);
+            currentSecondHighlight = divs[firstIndex];
+            currentSecondHighlight.classList.add("secondHighlight");
+            let tempDiv = divs[firstIndex];
+            let temp = array[firstIndex];
+            let j = firstIndex;
+            while(j > correctPosition) {
+                divs[j] = divs[j-1];
+                array[j] = array[j-1];
+                j--;
             }
+            divs[j] = tempDiv;
+            array[j] = temp;
+        } else {
+            currentSecondHighlight = divs[firstIndex];
+            currentSecondHighlight.classList.add("secondHighlight");
         }
-        setDiv(div, value, color, false);
+    } else {
+        currentFirstHighlight = divs[firstIndex];
+        currentFirstHighlight.classList.add("firstHighlight");
     }
-}*/
+
+}

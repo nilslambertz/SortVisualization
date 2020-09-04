@@ -7,7 +7,7 @@ let divs = []; // array with all the divs which represent the elements of 'array
 let sorting = false; // is the animation currently playing
 let stop = false; // is the stop button currently pressed
 let swapCreated = false; // has the sort been done by the chosen algorithm
-let algorithmNumber = 0; /* which algorithm is chosen, 0 = bubbleSort, 1 = mergeSort, 2 = insertionSort, 3 = quickSort,
+let algorithmNumber = 1; /* which algorithm is chosen, 0 = bubbleSort, 1 = mergeSort, 2 = insertionSort, 3 = quickSort,
                                                         4 = bogoSort
                             */
 let currentStep = 0; // for two-step-animations, it saves if we are in the first or second step
@@ -26,6 +26,10 @@ let round = 3; // amout of rounding the corners
 // variables concerning the array-range
 let minNumber = 5; // smallest possible element in the array (min height of the divs)
 let maxNumber = 600; // biggest possible element in the array (max height of the divs)
+
+// highlighted divs
+let currentFirstHighlight = undefined;
+let currentSecondHighlight = undefined;
 
 // trys for bogosort
 let bogoTrys = 10000;
@@ -67,11 +71,6 @@ function rangeSlider() {
     range.on('input', function () {
         $(this).next(value).html(this.value);
     });
-}
-
-document.getElementById('title').onclick = function () {
-    // redirect to main page
-    window.location.href = "https://nilslambertz.github.io";
 }
 
 document.getElementById('explosionSort').onclick = function () {
@@ -135,9 +134,11 @@ document.getElementById('sortDiv').onclick = function () {
                 // QuickSort
                 case 3: {
                     startTime = performance.now();
-                    quickSort(0, array.length - 1);
+                    //quickSort(0, array.length - 1);
+                    alert("Coming soon");
                     endTime = performance.now();
-                    break;
+                    return;
+                    //break;
                 }
                 // BogoSort
                 case 4: {
@@ -166,7 +167,7 @@ document.getElementById('sortDiv').onclick = function () {
                 break;
             }
             case 1: {
-                interval += 30;
+               // interval += 30;
                 mergeSortAnimation();
                 break;
             }
@@ -186,27 +187,6 @@ document.getElementById('sortDiv').onclick = function () {
                 alert("Not implemented (yet)");
 				return;
             }
-        }
-    }
-};
- 
-document.getElementById('stepDiv').onclick = function () {
-    secondArray = array.slice(0);
-	
-	// if currently sorting or already sorted, return
-    if ((currentlySorting()) || checkSorted() === 0) {
-        return;
-    }
-
-	// do one step with current algorithm
-    switch (algorithmNumber) {
-        case 0: bubbleSortStepByStep(); break;
-        case 1: mergeSortStepByStep(); break;
-		case 2: insertionSortStepByStep(); break;
-        case 3: quickSortStepByStep(); break;
-        case 4: bogoSortStepByStep(); break;
-        default: {
-            alert("Not implemented (yet)");
         }
     }
 };
@@ -288,6 +268,12 @@ document.getElementById('insertionSortDiv').onclick = function () {
 }
 
 document.getElementById("quickSortDiv").onclick = function() {
+    if(true) {
+        alert("Coming soon");
+        return;
+    }
+
+
 	// if currently sorting, return
 	if (currentlySorting()) {
         return;
@@ -416,8 +402,7 @@ function changeStyle(visible) {
         if (checkSorted() === 0) {
             drawArray();
 			document.getElementById('sortDiv').classList.remove("notSorting");
-			document.getElementById('sortDiv').classList.add("sorted");	
-			document.getElementById('sortDiv').style.cursor = "default";
+			document.getElementById('sortDiv').classList.add("sorted");
 			document.getElementById('sortDiv').innerHTML = "sorted";
         }
     } else {
@@ -438,6 +423,22 @@ function changeStyle(visible) {
             }
         }
     }
+}
+
+function endAnimation() {
+    if(checkSorted() === 0) {
+        for(let x of divs) {
+            let c = x.classList;
+            c.remove("leftHalf");
+            c.remove("rightHalf");
+            c.remove("firstHighlight");
+            c.remove("secondHighlight");
+            c.add("sortedElem");
+        }
+    }
+    currentFirstHighlight = undefined;
+    currentSecondHighlight = undefined;
+    changeStyle(true);
 }
 
 function createArray(elems) {
@@ -523,7 +524,7 @@ function createArray(elems) {
 
 	for(let i = 0; i < elems; i++) {
         let temp = document.createElement('div');
-        temp.setAttribute('id', i + "");
+        temp.classList.add("arrayElem");
         d[i] = temp;
 	}
 	
@@ -545,54 +546,21 @@ function shuffleArray(a) {
 
 function setDiv(div, height, farbe, visible) {
     div.style.color = (visible ? "white" : farbe);
-    div.style.fontSize = (visible ? 20 : 0) + "px";
-    div.style.fontFamily = "Arial";
     div.style.height = height + "px";
     div.style.width = width + "px";
-    div.style.backgroundColor = farbe;
+   // div.style.backgroundColor = farbe;
     div.style.marginRight = margin + "px";
-    div.style.display = "inline-block";
-    div.style.verticalAlign = "top";
     div.style.borderRadius = "0px 0px " + round + "px " + round + "px";
 }
 
 function drawArray(a = null) {
-    document.getElementById('content').innerHTML = '';
-    if(a == null || checkSorted() === 0) {
-        drawArrayDefault();
-        return;
-    }
-    switch(algorithmNumber) {
-        case 0: {
-            drawArrayBubbleSort(a);
-            break;
-        }
-        case 1: {
-            drawArrayMergeSort(a);
-            break;
-        }
-        case 2: {
-            drawArrayInsertionSort(a);
-            break;
-        }
-        case 3: {
-            drawArrayQuickSort(a);
-            break;
-        }
-        default: {
-            console.log("Error");
-            drawArrayDefault();
-            break;
-        }
-    }
-}
-
-function drawArrayDefault() {
+    let content = document.getElementById('content');
+    content.innerHTML = '';
     let color = (checkSorted() === 0 ? sortedColor : normalColor);
     for (let i = 0; i < array.length; i++) {
         let div = divs[i];
         let value = array[i];
-        document.getElementById('content').appendChild(divs[i]);
+        content.appendChild(divs[i]);
         setDiv(div, value, color, false);
     }
 }
@@ -666,78 +634,4 @@ function testSort(l = 100, v = 100) {
     console.log("\t\tComputation time: " + time.toFixed(2) + "ms");
 	
     return "Test finished!";
-}
-
-function insertionSort() {
-    for(let i = 0; i < secondArray.length; i++) {
-        swap.push([i]);
-        let temp = secondArray[i];
-        let j = i;
-        // find correct position in the part of the array that is left from the current element and put it there
-        while(j > 0 && secondArray[j-1] > temp) {
-            secondArray[j] = secondArray[j-1];
-            j--;
-        }
-        swap.push([i, j]);
-        secondArray[j] = temp;
-    }
-    swapCreated = true;
-}
-
-function insertionSortAnimation() {
-    let sortingInterval = setInterval(function () {
-        // if array is sorted or stop is pressed, make buttons visible and return
-        if (swap.length === 0 || stop) {
-            changeStyle(true);
-            clearInterval(sortingInterval);
-            return;
-        }
-
-        // do one step
-        insertionSortStepByStep();
-    }, interval);
-}
-
-function insertionSortStepByStep() {
-    if (!swapCreated) {
-        swap = [];
-        insertionSort();
-        swapCreated = true;
-    }
-
-    let a = swap.shift();
-    let index = a[0];
-    let pos = a[1];
-    if(pos != null) {
-        let temp = array[index];
-        let j = index;
-        while(array[j-1] > temp) {
-            array[j] = array[j-1];
-            j--;
-        }
-        array[j] = temp;
-    }
-    drawArray(a);
-
-    if (swap.length === 0 || stop) {
-        changeStyle(true);
-    }
-}
-
-function drawArrayInsertionSort(a) {
-    for (let i = 0; i < array.length; i++) {
-        let color = normalColor;
-        let div = divs[i];
-        let value = array[i];
-        document.getElementById('content').appendChild(divs[i]);
-
-        if (a[0] === i && a[1] !== i && a[1] == null) {
-            color = firstCompareColor;
-        } else {
-            if(a[1] === i) {
-                color = thirdHighlightColor;
-            }
-        }
-        setDiv(div, value, color, false);
-    }
 }

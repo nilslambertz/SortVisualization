@@ -1,11 +1,9 @@
 function bogoSortAnimation() {
     let sortingInterval = setInterval(function () {
         // if array is sorted or stop is pressed, make buttons visible and return
-        if (checkSorted() === 0 || stop || swap[0] <= 0) {
-            if(swap[0] === 0) {
-                swap[0] = bogoTrys;
-            }
-            changeStyle(true);
+        let sorted = checkSorted();
+        if (sorted === 0 || stop || swap[0] <= 0) {
+            endAnimation();
             clearInterval(sortingInterval);
             return;
         }
@@ -16,10 +14,26 @@ function bogoSortAnimation() {
 }
 
 function bogoSortStepByStep() {
-    array = shuffleArray(array);
-    drawArray();
+    shuffleArrayBogoSort(array);
+    drawBogoSort();
+}
 
-    if (checkSorted() === 0 || stop) {
-        changeStyle(true);
+function shuffleArrayBogoSort(a) {
+    for (let i = a.length - 1; i > 0; i--) {
+        let j = Math.floor(Math.random() * (i + 1));
+        let x = a[i];
+        a[i] = a[j];
+        a[j] = x;
+        let temp = divs[i];
+        divs[i] = divs[j];
+        divs[j] = temp;
+    }
+}
+
+function drawBogoSort() {
+    let content = document.getElementById("content");
+    content.innerHTML = "";
+    for(let i = 0; i < divs.length; i++) {
+        content.appendChild(divs[i]);
     }
 }

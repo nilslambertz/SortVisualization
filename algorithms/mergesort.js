@@ -3,19 +3,27 @@ function mergeSort(l, r) {
         // nothing to do
     } else {
         if (r - l === 1) {
-            // schema: [firstIndex, secondIndex, needToBeSwapped, null, null, null, false]
-            let a = [l, r, false, null, null, null, false];
+            let a = {
+                inMergeSort: true,
+                leftBorder: l,
+                rightBorder: r,
+                swapNeeded: false
+            }
             if (secondArray[l] > secondArray[r]) {
                 let temp = secondArray[l];
                 secondArray[l] = secondArray[r];
                 secondArray[r] = temp;
-                a = [l, r, true, null, null, null, false];
+                a.swapNeeded = true;
             }
             swap.push(a);
         } else {
             let i = Math.floor((r + l) / 2);
-            // schema: [null, null, false, leftBorder, rightBorder, mid, false]
-            let a = [null, null, false, l, r, i, false];
+            let a = {
+                inMergeSort: true,
+                leftBorder: l,
+                rightBorder: r,
+                mid: i
+            }
             swap.push(a);
             mergeSort(l, i-1);
             mergeSort(i, r);
@@ -27,8 +35,15 @@ function mergeSort(l, r) {
 function merge(l, r, mid) {
     let j = mid;
     while (j <= r) {
-        // schema: [firstIndex, SecondIndex, false, leftBorder, rightBorder, middle, moved];
-        let a = [j, j-1, false, l, r, j+1, false];
+        let a = {
+            inMergeSort: false,
+            firstIndex: j,
+            secondIndex: j-1,
+            leftBorder: l,
+            rightBorder: r,
+            mid: j+1,
+            moved: false
+        }
         // if smallest element of the second half is smaller than the biggest element of the first half
         if (secondArray[j] < secondArray[j - 1]) {
             let firstBigger = l;
@@ -46,7 +61,9 @@ function merge(l, r, mid) {
                 secondArray[x - 1] = temp;
             }
             // now we moved the elements
-            a = [firstBigger, j, false, l, r, j+1, true];
+            a.firstIndex = firstBigger;
+            a.secondIndex = j;
+            a.moved = true;
         }
         swap.push(a);
         j++;
@@ -56,10 +73,9 @@ function merge(l, r, mid) {
 
 function mergeSortAnimation() {
     let sortingInterval = setInterval(function () {
-        // if array is sorted or stop is pressed, make buttons visible and return
-        if (checkSorted() === 0 || stop) {
+        if (swap.length === 0 || stop) {
             clearInterval(sortingInterval);
-            changeStyle(true);
+            endAnimation();
             return;
         }
 
@@ -69,84 +85,87 @@ function mergeSortAnimation() {
 }
 
 function mergeSortStepByStep() {
-    if (!swapCreated) {
-        swap = [];
-        mergeSort(0, array.length - 1);
-        swapCreated = true;
-    }
-
     if (currentStep % 2 === 0) {
         let a = swap.shift();
-        let firstIndex = a[0];
-        let secondIndex = a[1];
-        let left = a[3];
-        let mid = a[4];
-        let right = a[5];
-        save[0] = firstIndex;
-        save[1] = secondIndex;
-        save[2] = left;
-        save[3] = mid;
-        save[4] = right;
+        let firstIndex = a.firstIndex;
+        let secondIndex = a.secondIndex;
+        save = a;
 
-
-        if (a[6]) {
+        if(a.moved) {
             for (let x = secondIndex; x > firstIndex; x--) {
                 let temp = array[x];
                 array[x] = array[x - 1];
                 array[x - 1] = temp;
             }
-            drawArray([null, null, a[3], a[5], a[4]]);
+            drawMergeSort(a);
         } else {
-            drawArray([a[0], a[1], a[3], a[5], a[4]]);
-            if (a[2]) {
+            if(a.swapNeeded) {
                 currentStep++;
+                a.firstStep = true;
             }
+            drawMergeSort(a);
         }
     } else {
-        let temp = array[save[0]];
-        array[save[0]] = array[save[1]];
-        array[save[1]] = temp;
-        drawArray([save[1], save[0], save[2], save[4], save[3]]);
+        let temp = array[save.leftBorder];
+        array[save.leftBorder] = array[save.rightBorder];
+        array[save.rightBorder] = temp;
+
+        save.firstStep = false;
+        drawMergeSort(save);
+
         currentStep++;
-    }
-
-
-    if (checkSorted() === 0 || stop) {
-        changeStyle(true);
     }
 }
 
-function drawArrayMergeSort(a) {
-    let sorted = checkSorted();
-    if(sorted === 0) {
-        drawArrayDefault();
-        return;
+function drawMergeSort(a) {
+    for(let x of divs) {
+        let c = x.classList;
+        c.remove("leftHalf");
+        c.remove("rightHalf");
+        c.remove("firstHighlight");
+        c.remove("secondHighlight");
     }
 
-    for (let i = 0; i < array.length; i++) {
-        let color = normalColor;
-        let div = divs[i];
-        let value = array[i];
-        document.getElementById('content').appendChild(divs[i]);
+    let first = a.firstIndex;
+    let second = a.secondIndex;
+    let left = a.leftBorder;
+    let mid = a.mid;
+    let right = a.rightBorder;
 
-        if (a[2] != null) {
-            if (a[2] <= i && i < a[3]) {
-                color = firstHighlightColor;
-            } else {
-                if (a[3] <= i && i <= a[4]) {
-                    color = secondHighlightColor;
-                }
-            }
+
+    if(a.inMergeSort && a.swapNeeded === undefined) {
+        for(let i = left; i < mid; i++) {
+            divs[i].classList.add("leftHalf");
+        }
+        for(let i = mid; i <= right; i++) {
+            divs[i].classList.add("rightHalf");
+        }
+    } else if(a.inMergeSort && a.swapNeeded === true) {
+        if(a.firstStep) {
+            divs[right].classList.add("firstHighlight");
+            divs[left].classList.add("secondHighlight");
         } else {
-            if (a[0] === i) {
-                color = firstCompareColor;
-            } else {
-                if (a[1] === i) {
-                    color = secondCompareColor;
-                }
+            document.getElementById("content").insertBefore(divs[right], divs[left]);
+            let tempDiv = divs[right];
+            divs[right] = divs[left];
+            divs[left] = tempDiv;
+            divs[right].classList.add("firstHighlight");
+            divs[left].classList.add("secondHighlight");
+        }
+    } else {
+        for(let i = left; i < mid; i++) {
+            divs[i].classList.add("leftHalf");
+        }
+        for(let i = mid; i <= right; i++) {
+            divs[i].classList.add("rightHalf");
+        }
+        if(a.moved) {
+            document.getElementById("content").insertBefore(divs[second], divs[first]);
+            for (let x = second; x > first; x--) {
+                let tempDiv = divs[x];
+                divs[x] = divs[x - 1];
+                divs[x - 1] = tempDiv;
             }
         }
-
-        setDiv(div, value, color, false);
     }
 }

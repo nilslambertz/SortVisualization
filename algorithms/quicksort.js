@@ -13,13 +13,28 @@ function partition(l, r) {
     let j = r-1;
     while(i < j) {
         while(i < r && secondArray[i] < x) {
-            // schema: [index1, index2, swap, left, middle, right]
-            let a = [i, 0, false, l, (l+r)/2, r];
+            let mid = Math.floor((r + l) / 2);
+            let a = {
+                firstIndex: i,
+                secondIndex: 0,
+                swapNeeded: false,
+                leftBorder: l,
+                mid: mid,
+                rightBorder: r
+            }
             swap.push(a);
             i++;
         }
         while(j > l && secondArray[j] >= x) {
-            let a = [j, 0, false, l, (l+r)/2, r];
+            let mid = Math.floor((r + l) / 2);
+            let a = {
+                firstIndex: j,
+                secondIndex: 0,
+                swapNeeded: false,
+                leftBorder: l,
+                mid: mid,
+                rightBorder: r
+            }
             swap.push(a);
             j--
         }
@@ -27,17 +42,31 @@ function partition(l, r) {
             let temp = secondArray[i];
             secondArray[i] = secondArray[j];
             secondArray[j] = temp;
-            let a = [i, j, true, l, (l+r)/2, r];
+            let mid = Math.floor((r + l) / 2);
+            let a = {
+                firstIndex: i,
+                secondIndex: j,
+                swapNeeded: true,
+                leftBorder: l,
+                mid: mid,
+                rightBorder: r
+            }
             swap.push(a);
-            //i++;
-            //j--;
         }
     }
     if(secondArray[i] > x) {
         let temp = secondArray[i];
         secondArray[i] = secondArray[r];
         secondArray[r] = temp;
-        let a = [i, r, true, l, (l+r)/2, r];
+        let mid = Math.floor((r + l) / 2);
+        let a = {
+            firstIndex: i,
+            secondIndex: r,
+            swapNeeded: true,
+            leftBorder: l,
+            mid: mid,
+            rightBorder: r
+        }
         swap.push(a);
     }
     return i;
@@ -45,10 +74,9 @@ function partition(l, r) {
 
 function quickSortAnimation() {
     let sortingInterval = setInterval(function () {
-        // if array is sorted or stop is pressed, make buttons visible and return
-        if (checkSorted() === 0 || stop) {
-            changeStyle(true);
+        if ((swap.length === 0 && !save.firstStep) || stop) {
             clearInterval(sortingInterval);
+            endAnimation();
             return;
         }
 
@@ -58,59 +86,61 @@ function quickSortAnimation() {
 }
 
 function quickSortStepByStep() {
-    if (!swapCreated) {
-        swap = [];
-        quickSort(0, array.length - 1);
-        swapCreated = true;
-    }
-
     if (currentStep % 2 === 0) {
         let a = swap.shift();
-        let switchElems = a[2];
+        a.firstStep = true;
         save = a;
 
-        drawArray(a);
-        if (switchElems) {
+        if (a.swapNeeded) {
             currentStep++;
         }
+        drawQuickSort(a);
     } else {
-        let temp = array[save[0]];
-        array[save[0]] = array[save[1]];
-        array[save[1]] = temp;
-        drawArray([save[1], save[0], save[2], save[3], save[4], save[5]]);
+        let first = save.firstIndex;
+        let second = save.secondIndex;
+
+        let temp = array[first];
+        array[first] = array[second];
+        array[second] = temp;
+
+        save.firstStep = false;
+        drawQuickSort(save);
         currentStep++;
-    }
-
-
-    if (checkSorted() === 0 || stop) {
-        changeStyle(true);
     }
 }
 
-function drawArrayQuickSort(a) {
-    for (let i = 0; i < array.length; i++) {
-        let color = normalColor;
-        let div = divs[i];
-        let value = array[i];
-        document.getElementById('content').appendChild(divs[i]);
-        // schema: [index1, index2, swap, left, middle, right]
+function drawQuickSort(a) {
+    for(let x of divs) {
+        let c = x.classList;
+        c.remove("leftHalf");
+        c.remove("rightHalf");
+        c.remove("firstHighlight");
+        c.remove("secondHighlight");
+    }
 
-        if(a[3] <= i && i <= a[4]) {
-            color = secondHighlightColor;
-        } else {
-            if(a[4] <= i && i <= a[5]) {
-                color = firstHighlightColor;
-            }
+    let first = a.firstIndex;
+    let second = a.secondIndex;
+    let left = a.leftBorder;
+    let mid = a.mid;
+    let right = a.rightBorder;
+
+    if(a.firstStep) {
+        for(let i = left; i < mid; i++) {
+            divs[i].classList.add("leftHalf");
         }
-
-        if(i === a[0]) {
-            color = firstCompareColor;
-        } else {
-            if(i === a[1] && a[2]) {
-                color = secondCompareColor;
-            }
+        for(let i = mid; i <= right; i++) {
+            divs[i].classList.add("rightHalf");
         }
+    } else {
+        let content = document.getElementById("content");
+        let temp = document.createElement("div");
+        content.insertBefore(temp, divs[first]);
+        content.insertBefore(divs[first], divs[second]);
+        content.insertBefore(divs[second], temp);
+        content.removeChild(temp);
 
-        setDiv(div, value, color, false);
+        let tempDiv = divs[first];
+        divs[first] = divs[second];
+        divs[second] = tempDiv;
     }
 }
