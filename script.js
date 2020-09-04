@@ -267,13 +267,8 @@ document.getElementById('insertionSortDiv').onclick = function () {
     drawArray();
 }
 
+/*
 document.getElementById("quickSortDiv").onclick = function() {
-    if(true) {
-        alert("Coming soon");
-        return;
-    }
-
-
 	// if currently sorting, return
 	if (currentlySorting()) {
         return;
@@ -291,7 +286,7 @@ document.getElementById("quickSortDiv").onclick = function() {
     document.getElementById("quickSortDiv").style.textDecoration = "underline";
     algorithmNumber = 3;
     drawArray();
-}
+}*/
 
 document.getElementById('bogoSortDiv').onclick = function () {
     // if currently sorting, return
