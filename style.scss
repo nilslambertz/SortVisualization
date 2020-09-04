@@ -2,6 +2,8 @@ $navHeight: 50px;
 $navBorder: 1px;
 $contentPadding: 20px;
 
+$defaultColor: #818181;
+
 .default {
   --backgroundGradientLeft: #2187ec;
   --backgroundGradientRight: #4169E1;
@@ -52,6 +54,7 @@ html, body {
   float: left;
   width: 250px;
   text-align: center;
+  text-decoration: none;
   color: var(--fontColorLeftNav);
   font-weight: bold;
   border-right: $navBorder solid white;
@@ -122,11 +125,17 @@ html, body {
 }
 
 #sortDiv:hover {
+  cursor: pointer;
   transition: background-color 0.4s, font-size 0.4s;
 }
 
-#bubbleSortDiv {
+#mergeSortDiv {
   text-decoration: underline;
+}
+
+#quickSortDiv {
+  opacity: 0.2;
+  cursor: default;
 }
 
 .notSorting {
@@ -149,7 +158,8 @@ html, body {
   background-color: #A8A8A8;
 }
 
-.sorted:hover {
+#sortDiv.sorted:hover {
+  cursor: default;
   background-color: #A8A8A8;
 }
 
@@ -183,14 +193,43 @@ html, body {
   background: #E5E5E5;
   background: linear-gradient(to bottom right, var(--contentGradientLeft), var(--contentGradientRight));
   text-align: center;
-  padding: 0px $contentPadding $contentPadding;
+  padding: 0 $contentPadding $contentPadding;
   overflow: auto;
   white-space: nowrap;
   float: left;
-  box-shadow: 0px 0px 20px 5px var(--contentShadow) inset;
+  box-shadow: 0 0 20px 5px var(--contentShadow) inset;
 }
 
-/* */
+/* array-element */
+.arrayElem {
+  background-color: $defaultColor;
+  display: inline-block;
+  vertical-align: top;
+}
+
+.arrayElem.firstHighlight {
+  background-color: #1bb5cd;
+}
+
+.arrayElem.secondHighlight {
+  background-color: #1675c4;
+}
+
+.arrayElem.sortedElem {
+  background-color: #1f8a25;
+}
+
+.arrayElem.changedElem {
+  background-color: #ff8c00;
+}
+
+.arrayElem.leftHalf {
+  background-color: #ff7700;
+}
+
+.arrayElem.rightHalf {
+  background-color: #ff5900;
+}
 
 
 /* The slider itself */
@@ -215,4 +254,8 @@ html, body {
   border-radius: 25px;
   cursor: pointer;
   background: #4CAF50;
+}
+
+@media only screen and (max-width: 600px) {
+
 }
