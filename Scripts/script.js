@@ -45,33 +45,21 @@ let thirdHighlightColor;
 changeTheme(0); // initializing with default-theme
 
 // Initialize Sliders
-range = $('#elemSlider');
-value = $('#sliderValue');
-speed = $('#speedSlider');
+let elemSlider = document.getElementById('elemSlider');
+let elemSliderSpan = document.getElementById('sliderValue');
+let speedSlider = document.getElementById('speedSlider');
 
 // initializing site
 let interval = 0;
-$('document').ready(function() {
-    minNumber = parseInt(document.getElementById('elemSlider').min);
-    maxNumber = parseInt(document.getElementById('elemSlider').max);
-    document.body.classList.add('default');
-    rangeSlider();
-    createArray(parseInt(document.getElementById("elemSlider").value));
-    interval = parseInt(document.getElementById("speedSlider").value);
+minNumber = parseInt(elemSlider.min);
+maxNumber = parseInt(elemSlider.max);
+document.body.classList.add('default');
+createArray(parseInt(elemSlider.value));
+interval = parseInt(speedSlider.value);
+
+document.getElementById("elemSlider").addEventListener("input", () => {
+    elemSliderSpan.innerText = elemSlider.value;
 })
-
-// 
-
-function rangeSlider() {
-    range.each(function () {
-       let value = $(this).prev().attr('value');
-       $(this).html(value);
-    });
-
-    range.on('input', function () {
-        $(this).next(value).html(this.value);
-    });
-}
 
 document.getElementById('explosionSort').onclick = function () {
     if (currentlySorting()) {
@@ -86,8 +74,8 @@ document.getElementById('sortDiv').onclick = function () {
     secondArray = array.slice(0);
 	
 	// update interval
-    interval = parseInt(document.getElementById("speedSlider").max)
-        - parseInt(document.getElementById("speedSlider").value);
+    interval = parseInt(speedSlider.max)
+        - parseInt(speedSlider.value);
 	
 	// if animation is finished, do nothing
     if (animationFinished() || isSorted(getCurrentArray())) {
@@ -296,8 +284,7 @@ document.getElementById('createArrayDiv').onclick = function () {
     }
 	
 	// create new array
-    let value = document.getElementById("elemSlider").value;
-    createArray(parseInt(value));
+    createArray(parseInt(elemSlider.value));
 	changeStyle(true);
 };
 
@@ -348,8 +335,8 @@ function changeStyle(visible) {
         }
 		
 		// enable the sliders
-        document.getElementById("speedSlider").disabled = false;
-        document.getElementById("elemSlider").disabled = false;
+        speedSlider.disabled = false;
+        elemSlider.disabled = false;
 		
 		// change the opacity of the buttons on the left
         for (let i of document.getElementsByClassName("leftNavElem")) {
@@ -375,8 +362,8 @@ function changeStyle(visible) {
             i.style.opacity = "0.2";
             i.style.cursor = "default";
         }
-        document.getElementById("speedSlider").disabled = true;
-        document.getElementById("elemSlider").disabled = true;
+        speedSlider.disabled = true;
+        elemSlider.disabled = true;
         for (let i of document.getElementsByClassName("leftNavElem")) {
             if (i !== document.getElementById("sortDiv")) {
                 i.style.opacity = "0.2";
@@ -512,7 +499,6 @@ function setDiv(div, height, farbe, visible) {
     div.style.color = (visible ? "white" : farbe);
     div.style.height = height + "px";
     div.style.width = width + "px";
-   // div.style.backgroundColor = farbe;
     div.style.marginRight = margin + "px";
     div.style.borderRadius = "0px 0px " + round + "px " + round + "px";
 }
