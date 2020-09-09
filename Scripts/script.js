@@ -13,7 +13,6 @@ let currentStep = 0; // for two-step-animations, it saves if we are in the first
 let time = 0; // used to save the time it took to sort
 
 // arrays for storing temporal data
-let changed = []; // array e.g. for bubblesort, which shows all swaps in current iteration
 let swap = []; // all swaps that have been done for the sorting are in here, saved as arrays
 let save = []; // if you need two steps for an animation, the needed information is stored here
 
@@ -21,10 +20,6 @@ let save = []; // if you need two steps for an animation, the needed information
 let width = 10; // width of the divs
 let margin = 7; // margin between the divs
 let round = 3; // amout of rounding the corners
-
-// variables concerning the array-range
-let minNumber = 5; // smallest possible element in the array (min height of the divs)
-let maxNumber = 600; // biggest possible element in the array (max height of the divs)
 
 // highlighted divs
 let currentFirstHighlight = undefined;
@@ -41,9 +36,11 @@ let speedSlider = document.getElementById('speedSlider');
 // initializing site
 let interval = 0;
 let sortInterval;
-minNumber = parseInt(elemSlider.min);
-maxNumber = parseInt(elemSlider.max);
-document.body.classList.add('default');
+
+// variables concerning the array-range
+let minNumber = parseInt(elemSlider.min); // smallest possible element in the array (min height of the divs)
+let maxNumber = parseInt(elemSlider.max); // biggest possible element in the array (max height of the divs)
+
 createArray(parseInt(elemSlider.value));
 interval = parseInt(speedSlider.value);
 
@@ -205,7 +202,6 @@ function initialiseSort(buttonId, algoNumber) {
         drawArray();
     }
 
-    changed = [];
     swapCreated = false;
     currentStep = 0;
     swap = [];
@@ -361,7 +357,6 @@ function createArray(elems) {
     sorting = false;
     currentStep = 0;
     swapCreated = false;
-    changed = [];
     swap = [];
     save = [];
 
@@ -374,7 +369,6 @@ function createArray(elems) {
         console.log("Not enough elements. Elements set to " + elems);
     }
 
-    changed = [];
     if (elems < 20) {
         margin = 5;
         width = 40;
