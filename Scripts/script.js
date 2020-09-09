@@ -58,8 +58,6 @@ document.getElementById('explosionSort').onclick = function () {
 }
 
 document.getElementById('sortDiv').onclick = function () {
-    secondArray = array.slice(0);
-	
 	// update interval
     interval = parseInt(speedSlider.max)
         - parseInt(speedSlider.value);
@@ -79,8 +77,7 @@ document.getElementById('sortDiv').onclick = function () {
         changeStyle(true);
     } else {
 		// currently not sorting
-	
-		// if sort hasn't been done, sort 'secondArray' and save the steps to 'swap'
+
         if (!swapCreated) {
             swap = [];
             time = 0;
@@ -170,14 +167,12 @@ document.getElementById('defaultThemeDiv').onclick = function() {
     if(currentlySorting()) return;
     document.body.classList.remove('dark');
     document.body.classList.add('default');
-    drawArray(save);
 }
 
 document.getElementById('darkThemeDiv').onclick = function() {
     if(currentlySorting()) return;
     document.body.classList.remove('default');
     document.body.classList.add('dark');
-    drawArray(save);
 }
 
 function getCurrentArray() {
@@ -277,10 +272,8 @@ document.getElementById('createArrayDiv').onclick = function () {
 function changeStyle(visible) {
 	// if buttons should be visible
     if (visible) {
-        sorting = false;
-		
 		// set the properties of the sortButton
-        document.getElementById('sortDiv').innerHTML = 'sort';
+        document.getElementById('sortDiv').innerText = 'sort';
         document.getElementById('sortDiv').classList.remove("sorting");
         document.getElementById('sortDiv').classList.remove("sorted");
         document.getElementById('sortDiv').classList.add("notSorting");
@@ -310,11 +303,10 @@ function changeStyle(visible) {
             drawArray();
 			document.getElementById('sortDiv').classList.remove("notSorting");
 			document.getElementById('sortDiv').classList.add("sorted");
-			document.getElementById('sortDiv').innerHTML = "sorted";
+			document.getElementById('sortDiv').innerText = "sorted";
         }
     } else {
-        sorting = true;
-        document.getElementById('sortDiv').innerHTML = 'stop';
+        document.getElementById('sortDiv').innerText = 'stop';
         document.getElementById('sortDiv').classList.remove("notSorting");
         document.getElementById('sortDiv').classList.add("sorting");
         for (let i of document.getElementsByClassName("navElem")) {
@@ -348,6 +340,7 @@ function endAnimation() {
             x.classList.add("sortedElem");
         }
     }
+    sorting = false;
     changeStyle(true);
 }
 
@@ -439,16 +432,6 @@ function createArray(elems) {
     array = a;
     divs = d;
     drawArray();
-}
-
-function shuffleArray(a) {
-    for (let i = a.length - 1; i > 0; i--) {
-        let j = Math.floor(Math.random() * (i + 1));
-        let x = a[i];
-        a[i] = a[j];
-        a[j] = x;
-    }
-    return a;
 }
 
 function setDiv(div, height, visible) {
