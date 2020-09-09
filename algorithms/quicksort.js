@@ -16,7 +16,7 @@ function partition(l, r) {
             let mid = Math.floor((r + l) / 2);
             let a = {
                 firstIndex: i,
-                secondIndex: 0,
+                secondIndex: j,
                 swapNeeded: false,
                 leftBorder: l,
                 mid: mid,
@@ -28,8 +28,8 @@ function partition(l, r) {
         while(j > l && array[j] >= x) {
             let mid = Math.floor((r + l) / 2);
             let a = {
-                firstIndex: j,
-                secondIndex: 0,
+                firstIndex: i,
+                secondIndex: j,
                 swapNeeded: false,
                 leftBorder: l,
                 mid: mid,
@@ -111,14 +111,30 @@ function drawQuickSort(a) {
     let mid = a.mid;
     let right = a.rightBorder;
 
-    if(a.firstStep) {
-        for(let i = left; i < mid; i++) {
-            divs[i].classList.add("leftHalf");
+    for(let i = left; i < mid; i++) {
+        if(i === first || i === second) {
+            if(i === first) {
+                divs[first].classList.add("firstHighlight");
+            } else {
+                divs[second].classList.add("secondHighlight");
+            }
+            continue;
         }
-        for(let i = mid; i <= right; i++) {
-            divs[i].classList.add("rightHalf");
+        divs[i].classList.add("leftHalf");
+    }
+    for(let i = mid; i <= right; i++) {
+        if(i === first || i === second) {
+            if(i === first) {
+                divs[first].classList.add("firstHighlight");
+            } else {
+                divs[second].classList.add("secondHighlight");
+            }
+            continue;
         }
-    } else {
+        divs[i].classList.add("rightHalf");
+    }
+
+    if(!a.firstStep) {
         let content = document.getElementById("content");
         let temp = document.createElement("div");
         content.insertBefore(temp, divs[first]);
