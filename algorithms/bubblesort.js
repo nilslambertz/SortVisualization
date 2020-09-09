@@ -19,9 +19,9 @@ function bubbleSort() {
 }
 
 function bubbleSortAnimation() {
-    let sortingInterval = setInterval(function () {
-        if (swap.length === 0 || stop) {
-            clearInterval(sortingInterval);
+    sortInterval = setInterval(function () {
+        if (swap.length === 0) {
+            clearInterval(sortInterval);
             endAnimation();
             return;
         }

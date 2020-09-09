@@ -20,10 +20,10 @@ function insertionSort() {
 }
 
 function insertionSortAnimation() {
-    let sortingInterval = setInterval(function () {
-        if (swap.length === 0 || stop) {
+    sortInterval = setInterval(function () {
+        if (swap.length === 0) {
+            clearInterval(sortInterval);
             endAnimation();
-            clearInterval(sortingInterval);
             return;
         }
 

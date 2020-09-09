@@ -1,12 +1,12 @@
 function bogoSortAnimation() {
-    let sortingInterval = setInterval(function () {
+    sortInterval= setInterval(function () {
         // if array is sorted or stop is pressed, make buttons visible and return
-        if (isSorted() || stop || swap[0] <= 0) {
+        if (isSorted() || swap[0] <= 0) {
             if(isSorted()) {
                 swap = [];
             }
             endAnimation();
-            clearInterval(sortingInterval);
+            clearInterval(sortInterval);
             return;
         }
 

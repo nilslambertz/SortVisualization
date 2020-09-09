@@ -72,9 +72,9 @@ function merge(l, r, mid) {
 }
 
 function mergeSortAnimation() {
-    let sortingInterval = setInterval(function () {
-        if (swap.length === 0 || stop) {
-            clearInterval(sortingInterval);
+    sortInterval = setInterval(function () {
+        if (swap.length === 0) {
+            clearInterval(sortInterval);
             endAnimation();
             return;
         }

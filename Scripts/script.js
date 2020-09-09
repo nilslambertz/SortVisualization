@@ -51,6 +51,7 @@ let speedSlider = document.getElementById('speedSlider');
 
 // initializing site
 let interval = 0;
+let sortInterval;
 minNumber = parseInt(elemSlider.min);
 maxNumber = parseInt(elemSlider.max);
 document.body.classList.add('default');
@@ -87,6 +88,8 @@ document.getElementById('sortDiv').onclick = function () {
 	// if currently sorting, stop sorting and make buttons visible
     if (currentlySorting()) {
         stop = true;
+        clearInterval(sortInterval);
+        endAnimation();
         changeStyle(true);
     } else {
 		// currently not sorting
