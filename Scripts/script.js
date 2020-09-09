@@ -1,6 +1,5 @@
 // arrays of the animation
 let array = []; // main array
-let secondArray = []; // array used to first sort and save the changes/swaps made
 let divs = []; // array with all the divs which represent the elements of 'array'
 
 // variables which define the current state
@@ -33,16 +32,6 @@ let currentSecondHighlight = undefined;
 
 // trys for bogosort
 let bogoTrys = 10000;
-
-// colors
-let sortedColor;
-let normalColor;
-let firstHighlightColor;
-let secondHighlightColor;
-let firstCompareColor;
-let secondCompareColor;
-let thirdHighlightColor;
-changeTheme(0); // initializing with default-theme
 
 // Initialize Sliders
 let elemSlider = document.getElementById('elemSlider');
@@ -184,7 +173,6 @@ document.getElementById('defaultThemeDiv').onclick = function() {
     if(currentlySorting()) return;
     document.body.classList.remove('dark');
     document.body.classList.add('default');
-    changeTheme(0);
     drawArray(save);
 }
 
@@ -192,7 +180,6 @@ document.getElementById('darkThemeDiv').onclick = function() {
     if(currentlySorting()) return;
     document.body.classList.remove('default');
     document.body.classList.add('dark');
-    changeTheme(1);
     drawArray(save);
 }
 
@@ -290,33 +277,6 @@ document.getElementById('createArrayDiv').onclick = function () {
     createArray(parseInt(elemSlider.value));
 	changeStyle(true);
 };
-
-// other functions
-
-function changeTheme(nr) {
-    switch(nr) {
-        case 0: {
-            sortedColor = "#228B22";
-            normalColor = "#7D7D7D";
-            firstHighlightColor = "#FFA54F";
-            secondHighlightColor = "#EE7621";
-            firstCompareColor = "#4169E1";
-            secondCompareColor = "#00B2EE";
-            thirdHighlightColor = "#EE4000";
-            break;
-        }
-        case 1: {
-            sortedColor = "#228B22";
-            normalColor = "#B5B5B5";
-            firstHighlightColor = "#FFA54F";
-            secondHighlightColor = "#EE7621";
-            firstCompareColor = "#4169E1";
-            secondCompareColor = "#00B2EE";
-            thirdHighlightColor = "#EE4000";
-            break;
-        }
-    }
-}
 
 function changeStyle(visible) {
 	// if buttons should be visible
@@ -485,7 +445,6 @@ function createArray(elems) {
     array = a;
     divs = d;
     drawArray();
-    secondArray = array.slice(0);
 }
 
 function shuffleArray(a) {
@@ -498,8 +457,7 @@ function shuffleArray(a) {
     return a;
 }
 
-function setDiv(div, height, farbe, visible) {
-    div.style.color = (visible ? "white" : farbe);
+function setDiv(div, height, visible) {
     div.style.height = height + "px";
     div.style.width = width + "px";
     div.style.marginRight = margin + "px";
@@ -509,11 +467,10 @@ function setDiv(div, height, farbe, visible) {
 function drawArray(a = null) {
     let content = document.getElementById('content');
     content.innerHTML = '';
-    let color = (animationFinished() ? sortedColor : normalColor);
     for (let i = 0; i < array.length; i++) {
         let div = divs[i];
         let value = array[i];
         content.appendChild(divs[i]);
-        setDiv(div, value, color, false);
+        setDiv(div, value, false);
     }
 }
