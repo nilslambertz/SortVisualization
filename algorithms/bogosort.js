@@ -1,8 +1,10 @@
 function bogoSortAnimation() {
     let sortingInterval = setInterval(function () {
         // if array is sorted or stop is pressed, make buttons visible and return
-        let sorted = checkSorted();
-        if (sorted === 0 || stop || swap[0] <= 0) {
+        if (isSorted() || stop || swap[0] <= 0) {
+            if(isSorted()) {
+                swap = [];
+            }
             endAnimation();
             clearInterval(sortingInterval);
             return;

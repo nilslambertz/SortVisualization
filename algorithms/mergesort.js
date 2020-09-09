@@ -9,10 +9,10 @@ function mergeSort(l, r) {
                 rightBorder: r,
                 swapNeeded: false
             }
-            if (secondArray[l] > secondArray[r]) {
-                let temp = secondArray[l];
-                secondArray[l] = secondArray[r];
-                secondArray[r] = temp;
+            if (array[l] > array[r]) {
+                let temp = array[l];
+                array[l] = array[r];
+                array[r] = temp;
                 a.swapNeeded = true;
             }
             swap.push(a);
@@ -45,20 +45,20 @@ function merge(l, r, mid) {
             moved: false
         }
         // if smallest element of the second half is smaller than the biggest element of the first half
-        if (secondArray[j] < secondArray[j - 1]) {
+        if (array[j] < array[j - 1]) {
             let firstBigger = l;
             // find first bigger element in the second half
             for (let x = l; x < j; x++) {
-                if (secondArray[x] > secondArray[j]) {
+                if (array[x] > array[j]) {
                     firstBigger = x;
                     break;
                 }
             }
             // move every element one place "to the right" and put the current element in the empty space
             for (let x = j; x > firstBigger; x--) {
-                let temp = secondArray[x];
-                secondArray[x] = secondArray[x - 1];
-                secondArray[x - 1] = temp;
+                let temp = array[x];
+                array[x] = array[x - 1];
+                array[x - 1] = temp;
             }
             // now we moved the elements
             a.firstIndex = firstBigger;
@@ -92,11 +92,6 @@ function mergeSortStepByStep() {
         save = a;
 
         if(a.moved) {
-            for (let x = secondIndex; x > firstIndex; x--) {
-                let temp = array[x];
-                array[x] = array[x - 1];
-                array[x - 1] = temp;
-            }
             drawMergeSort(a);
         } else {
             if(a.swapNeeded) {
@@ -106,10 +101,6 @@ function mergeSortStepByStep() {
             drawMergeSort(a);
         }
     } else {
-        let temp = array[save.leftBorder];
-        array[save.leftBorder] = array[save.rightBorder];
-        array[save.rightBorder] = temp;
-
         save.firstStep = false;
         drawMergeSort(save);
 
@@ -118,13 +109,7 @@ function mergeSortStepByStep() {
 }
 
 function drawMergeSort(a) {
-    for(let x of divs) {
-        let c = x.classList;
-        c.remove("leftHalf");
-        c.remove("rightHalf");
-        c.remove("firstHighlight");
-        c.remove("secondHighlight");
-    }
+    removeAllElemStyles();
 
     let first = a.firstIndex;
     let second = a.secondIndex;

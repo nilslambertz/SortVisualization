@@ -1,20 +1,20 @@
 function insertionSort() {
-    for(let i = 0; i < secondArray.length; i++) {
+    for(let i = 0; i < array.length; i++) {
         swap.push({
             firstIndex: i
         });
-        let temp = secondArray[i];
+        let temp = array[i];
         let j = i;
         // find correct position in the part of the array that is left from the current element and put it there
-        while(j > 0 && secondArray[j-1] > temp) {
-            secondArray[j] = secondArray[j-1];
+        while(j > 0 && array[j-1] > temp) {
+            array[j] = array[j-1];
             j--;
         }
         swap.push({
             firstIndex: i,
             correctPosition: j
         });
-        secondArray[j] = temp;
+        array[j] = temp;
     }
     swapCreated = true;
 }
@@ -50,15 +50,12 @@ function drawInsertionSort(o) {
             currentSecondHighlight = divs[firstIndex];
             currentSecondHighlight.classList.add("secondHighlight");
             let tempDiv = divs[firstIndex];
-            let temp = array[firstIndex];
             let j = firstIndex;
             while(j > correctPosition) {
                 divs[j] = divs[j-1];
-                array[j] = array[j-1];
                 j--;
             }
             divs[j] = tempDiv;
-            array[j] = temp;
         } else {
             currentSecondHighlight = divs[firstIndex];
             currentSecondHighlight.classList.add("secondHighlight");

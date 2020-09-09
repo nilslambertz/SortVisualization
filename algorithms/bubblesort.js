@@ -1,14 +1,14 @@
 function bubbleSort() {
-    for (let n = secondArray.length; n > 1; n--) {
+    for (let n = array.length; n > 1; n--) {
         for (let i = 0; i < n - 1; i++) {
             let a = {
                 firstIndex: i,
                 swapElements: false
             }
-            if (secondArray[i] > secondArray[i + 1]) {
-                let temp = secondArray[i];
-                secondArray[i] = secondArray[i + 1];
-                secondArray[i + 1] = temp;
+            if (array[i] > array[i + 1]) {
+                let temp = array[i];
+                array[i] = array[i + 1];
+                array[i + 1] = temp;
                 a.swapElements = true;
             }
             swap.push(a);
@@ -21,8 +21,8 @@ function bubbleSort() {
 function bubbleSortAnimation() {
     let sortingInterval = setInterval(function () {
         if (swap.length === 0 || stop) {
-            endAnimation();
             clearInterval(sortingInterval);
+            endAnimation();
             return;
         }
 
@@ -38,15 +38,8 @@ function bubbleSortStepByStep() {
         let a = swap.shift();
         let firstIndex = a.firstIndex;
 
-        // if next iteration
-        if (firstIndex < save[0]) {
-            divs[save[1]].classList.add("sortedElem");
-        }
+        save = a;
 
-        save[0] = firstIndex;
-        save[1] = firstIndex+1;
-
-      //  drawArray(save);
         drawBubbleSort({
             firstIndex: firstIndex,
             swapped: false
@@ -54,18 +47,15 @@ function bubbleSortStepByStep() {
 
         // if elements must be swapped, swap them and increase 'currentStep'
         if (a.swapElements) {
-            let temp = array[firstIndex];
-            array[firstIndex] = array[firstIndex+1];
-            array[firstIndex+1] = temp;
             currentStep++;
         }
     } else {
         // draw array with swapped elements
-        let x = divs[save[1]];
-        divs[save[1]] = divs[save[0]];
-        divs[save[0]] = x;
+        let x = divs[save.firstIndex + 1];
+        divs[save.firstIndex + 1] = divs[save.firstIndex];
+        divs[save.firstIndex] = x;
         drawBubbleSort({
-            firstIndex: save[0],
+            firstIndex: save.firstIndex,
             swapped: true
         });
         currentStep++;

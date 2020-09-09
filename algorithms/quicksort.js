@@ -8,11 +8,11 @@ function quickSort(l, r) {
 }
 
 function partition(l, r) {
-    let x = secondArray[r];
+    let x = array[r];
     let i = l;
     let j = r-1;
     while(i < j) {
-        while(i < r && secondArray[i] < x) {
+        while(i < r && array[i] < x) {
             let mid = Math.floor((r + l) / 2);
             let a = {
                 firstIndex: i,
@@ -25,7 +25,7 @@ function partition(l, r) {
             swap.push(a);
             i++;
         }
-        while(j > l && secondArray[j] >= x) {
+        while(j > l && array[j] >= x) {
             let mid = Math.floor((r + l) / 2);
             let a = {
                 firstIndex: j,
@@ -36,12 +36,12 @@ function partition(l, r) {
                 rightBorder: r
             }
             swap.push(a);
-            j--
+            j--;
         }
         if(i < j) {
-            let temp = secondArray[i];
-            secondArray[i] = secondArray[j];
-            secondArray[j] = temp;
+            let temp = array[i];
+            array[i] = array[j];
+            array[j] = temp;
             let mid = Math.floor((r + l) / 2);
             let a = {
                 firstIndex: i,
@@ -54,10 +54,10 @@ function partition(l, r) {
             swap.push(a);
         }
     }
-    if(secondArray[i] > x) {
-        let temp = secondArray[i];
-        secondArray[i] = secondArray[r];
-        secondArray[r] = temp;
+    if(array[i] > x) {
+        let temp = array[i];
+        array[i] = array[r];
+        array[r] = temp;
         let mid = Math.floor((r + l) / 2);
         let a = {
             firstIndex: i,
@@ -74,7 +74,7 @@ function partition(l, r) {
 
 function quickSortAnimation() {
     let sortingInterval = setInterval(function () {
-        if ((swap.length === 0 && !save.firstStep) || stop) {
+        if (swap.length === 0 || stop) {
             clearInterval(sortingInterval);
             endAnimation();
             return;
@@ -96,13 +96,6 @@ function quickSortStepByStep() {
         }
         drawQuickSort(a);
     } else {
-        let first = save.firstIndex;
-        let second = save.secondIndex;
-
-        let temp = array[first];
-        array[first] = array[second];
-        array[second] = temp;
-
         save.firstStep = false;
         drawQuickSort(save);
         currentStep++;
@@ -110,13 +103,7 @@ function quickSortStepByStep() {
 }
 
 function drawQuickSort(a) {
-    for(let x of divs) {
-        let c = x.classList;
-        c.remove("leftHalf");
-        c.remove("rightHalf");
-        c.remove("firstHighlight");
-        c.remove("secondHighlight");
-    }
+    removeAllElemStyles();
 
     let first = a.firstIndex;
     let second = a.secondIndex;
