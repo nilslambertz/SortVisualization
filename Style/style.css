@@ -6,6 +6,7 @@
   --contentShadow: #8C8C8C;
   --buttonHoverColor: #1874CD;
   --sortButtonColor: black;
+  --arrayElemColor: #818181;
   --fontColorNav: white;
   --fontColorLeftNav: black;
 }
@@ -18,6 +19,7 @@
   --contentShadow: #424242;
   --buttonHoverColor: #4F4F4F;
   --sortButtonColor: black;
+  --arrayElemColor: #cdcdcd;
   --fontColorNav: white;
   --fontColorLeftNav: #BFBFBF;
 }
@@ -179,7 +181,7 @@ html, body {
 
 /* array-element */
 .arrayElem {
-  background-color: #818181;
+  background-color: var(--arrayElemColor);
   display: inline-block;
   vertical-align: top;
 }

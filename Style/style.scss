@@ -2,8 +2,6 @@ $navHeight: 50px;
 $navBorder: 1px;
 $contentPadding: 20px;
 
-$defaultColor: #818181;
-
 .default {
   --backgroundGradientLeft: #2187ec;
   --backgroundGradientRight: #4169E1;
@@ -15,6 +13,8 @@ $defaultColor: #818181;
   --buttonHoverColor: #1874CD;
 
   --sortButtonColor: black;
+
+  --arrayElemColor: #818181;
 
   --fontColorNav: white;
   --fontColorLeftNav: black;
@@ -31,6 +31,8 @@ $defaultColor: #818181;
   --buttonHoverColor: #4F4F4F;
 
   --sortButtonColor: black;
+
+  --arrayElemColor: #cdcdcd;
 
   --fontColorNav: white;
   --fontColorLeftNav: #BFBFBF;
@@ -197,7 +199,7 @@ html, body {
 
 /* array-element */
 .arrayElem {
-  background-color: $defaultColor;
+  background-color: var(--arrayElemColor);
   display: inline-block;
   vertical-align: top;
 }
