@@ -7,7 +7,7 @@ let divs = []; // array with all the divs which represent the elements of 'array
 let sorting = false; // is the animation currently playing
 let stop = false; // is the stop button currently pressed
 let swapCreated = false; // has the sort been done by the chosen algorithm
-let algorithmNumber = 1; /* which algorithm is chosen, 0 = bubbleSort, 1 = mergeSort, 2 = insertionSort, 3 = quickSort,
+let algorithmNumber = 0; /* which algorithm is chosen, 0 = bubbleSort, 1 = mergeSort, 2 = insertionSort, 3 = quickSort,
                                                         4 = bogoSort
                             */
 let currentStep = 0; // for two-step-animations, it saves if we are in the first or second step
@@ -89,13 +89,13 @@ document.getElementById('sortDiv').onclick = function () {
     interval = parseInt(document.getElementById("speedSlider").max)
         - parseInt(document.getElementById("speedSlider").value);
 	
-	// if array is already sorted, do nothing
-    if (checkSorted() === 0) {
+	// if animation is finished, do nothing
+    if (animationFinished() || isSorted(getCurrentArray())) {
         stop = false;
         sorting = false;
         return;
     }
-	
+
 	// if currently sorting, stop sorting and make buttons visible
     if (currentlySorting()) {
         stop = true;
@@ -134,11 +134,9 @@ document.getElementById('sortDiv').onclick = function () {
                 // QuickSort
                 case 3: {
                     startTime = performance.now();
-                    //quickSort(0, array.length - 1);
-                    alert("Coming soon");
+                    quickSort(0, array.length - 1);
                     endTime = performance.now();
-                    return;
-                    //break;
+                    break;
                 }
                 // BogoSort
                 case 4: {
@@ -207,91 +205,26 @@ document.getElementById('darkThemeDiv').onclick = function() {
     drawArray(save);
 }
 
-document.getElementById('bubbleSortDiv').onclick = function () {
-	// if currently sorting, return
-    if (currentlySorting()) {
-        return;
+function getCurrentArray() {
+    let arr = [];
+
+    for(let i = 0; i < divs.length; i++) {
+        arr[i] = parseInt(divs[i].style.height);
     }
-	
-    changed = [];
-    swapCreated = false;
-    currentStep = 0;
-    swap = [];
-	
-	// underline bubbleSort, change 'algorithmNumber' and draw the 'array'
-    for (let i of document.getElementsByClassName("leftNavElem")) {
-        i.style.textDecoration = "none";
-    }
-    document.getElementById("bubbleSortDiv").style.textDecoration = "underline";
-    algorithmNumber = 0;
-    drawArray();
+
+    return arr;
 }
 
-document.getElementById('mergeSortDiv').onclick = function () {
-	// if currently sorting, return
-    if (currentlySorting()) {
-        return;
-    }
-	
-    changed = [];
-    swapCreated = false;
-    currentStep = 0;
-    swap = [];
-	
-	// underline mergeSort, change 'algorithmNumber' and draw the 'array'
-    for (let i of document.getElementsByClassName("leftNavElem")) {
-        i.style.textDecoration = "none";
-    }
-    document.getElementById("mergeSortDiv").style.textDecoration = "underline";
-    algorithmNumber = 1;
-    drawArray();
-}
-
-document.getElementById('insertionSortDiv').onclick = function () {
-	// if currently sorting, return
-    if (currentlySorting()) {
-        return;
-    }
-	
-    changed = [];
-    swapCreated = false;
-    currentStep = 0;
-    swap = [];
-	
-	// underline insertionSort, change 'algorithmNumber' and draw the 'array'
-    for (let i of document.getElementsByClassName("leftNavElem")) {
-        i.style.textDecoration = "none";
-    }
-    document.getElementById("insertionSortDiv").style.textDecoration = "underline";
-    algorithmNumber = 2;
-    drawArray();
-}
-
-/*
-document.getElementById("quickSortDiv").onclick = function() {
-	// if currently sorting, return
-	if (currentlySorting()) {
-        return;
-    }
-	
-    changed = [];
-    swapCreated = false;
-    currentStep = 0;
-    swap = [];
-	
-	// underline quickSort, change 'algorithmNumber' and draw the 'array'
-    for (let i of document.getElementsByClassName("leftNavElem")) {
-        i.style.textDecoration = "none";
-    }
-    document.getElementById("quickSortDiv").style.textDecoration = "underline";
-    algorithmNumber = 3;
-    drawArray();
-}*/
-
-document.getElementById('bogoSortDiv').onclick = function () {
+function initialiseSort(buttonId, algoNumber) {
     // if currently sorting, return
     if (currentlySorting()) {
         return;
+    }
+
+    array = getCurrentArray();
+    if(swap.length !== 0 && algorithmNumber !== algoNumber) {
+        removeAllElemStyles();
+        drawArray();
     }
 
     changed = [];
@@ -303,20 +236,53 @@ document.getElementById('bogoSortDiv').onclick = function () {
     for (let i of document.getElementsByClassName("leftNavElem")) {
         i.style.textDecoration = "none";
     }
-    document.getElementById("bogoSortDiv").style.textDecoration = "underline";
-    algorithmNumber = 4;
-    drawArray();
+    document.getElementById(buttonId).style.textDecoration = "underline";
+    algorithmNumber = algoNumber;
+}
+
+document.getElementById('bubbleSortDiv').onclick = function () {
+    initialiseSort("bubbleSortDiv", 0);
+}
+
+document.getElementById('mergeSortDiv').onclick = function () {
+	initialiseSort("mergeSortDiv", 1);
+}
+
+document.getElementById('insertionSortDiv').onclick = function () {
+    initialiseSort("insertionSortDiv", 2);
+}
+
+
+document.getElementById("quickSortDiv").onclick = function() {
+    initialiseSort("quickSortDiv", 3);
+}
+
+document.getElementById('bogoSortDiv').onclick = function () {
+    initialiseSort("bogoSortDiv", 4);
+}
+
+function animationFinished() {
+    return swapCreated && swap.length === 0;
 }
 
 // returns the lowest index of an array, where all following elements are sorted
 function checkSorted(a = array) {
     let firstSorted = 0;
-    for (let i = 1; i < a.length; i++) {
-        if (Math.max(...a.slice(0, i)) > a[i]) {
-            firstSorted = i + 1;
-        } 
+    for (let i = 0; i < a.length-1; i++) {
+        if(a[i+1] < a[i]) {
+            firstSorted = i+1;
+        }
     }
     return firstSorted;
+}
+
+function isSorted(a = array) {
+    for (let i = 0; i < a.length-1; i++) {
+        if(a[i+1] < a[i]) {
+            return false;
+        }
+    }
+    return true;
 }
 
 function currentlySorting() {
@@ -394,7 +360,7 @@ function changeStyle(visible) {
         }
 		
 		// if array ist sorted, make the sortButton grey
-        if (checkSorted() === 0) {
+        if (animationFinished()) {
             drawArray();
 			document.getElementById('sortDiv').classList.remove("notSorting");
 			document.getElementById('sortDiv').classList.add("sorted");
@@ -420,19 +386,22 @@ function changeStyle(visible) {
     }
 }
 
-function endAnimation() {
-    if(checkSorted() === 0) {
-        for(let x of divs) {
-            let c = x.classList;
-            c.remove("leftHalf");
-            c.remove("rightHalf");
-            c.remove("firstHighlight");
-            c.remove("secondHighlight");
-            c.add("sortedElem");
-        }
-    }
+function removeAllElemStyles() {
     currentFirstHighlight = undefined;
     currentSecondHighlight = undefined;
+
+    for(let x of divs) {
+        x.setAttribute("class", "arrayElem");
+    }
+}
+
+function endAnimation() {
+    if(checkSorted() === 0 && animationFinished()) {
+        removeAllElemStyles();
+        for(let x of divs) {
+            x.classList.add("sortedElem");
+        }
+    }
     changeStyle(true);
 }
 
@@ -551,7 +520,7 @@ function setDiv(div, height, farbe, visible) {
 function drawArray(a = null) {
     let content = document.getElementById('content');
     content.innerHTML = '';
-    let color = (checkSorted() === 0 ? sortedColor : normalColor);
+    let color = (animationFinished() ? sortedColor : normalColor);
     for (let i = 0; i < array.length; i++) {
         let div = divs[i];
         let value = array[i];
