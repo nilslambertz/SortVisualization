@@ -119,7 +119,7 @@ document.getElementById('sortDiv').onclick = function () {
                 }
 				// wrong algorithmNumber, return
                 default: {
-                    alert("Not implemented (yet)");
+                    alert("error");
 					return;
                 }
             }
@@ -156,7 +156,7 @@ document.getElementById('sortDiv').onclick = function () {
                 break;
             }
             default: {
-                alert("Not implemented (yet)");
+                alert("error");
 				return;
             }
         }
@@ -406,7 +406,6 @@ function createArray(elems) {
                 }
             }
         }
-
     }
 
     let a = Array(elems);

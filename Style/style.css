@@ -37,15 +37,21 @@ html, body {
   user-select: none;
 }
 
+#right {
+  float: left;
+  display: flex;
+  flex-direction: column;
+  width: calc(100% - 251px);
+  height: 100%;
+}
+
 /* title area */
 #title {
-  float: left;
-  width: 250px;
+  height: 50px;
+  line-height: 50px;
   text-align: center;
-  text-decoration: none;
   color: var(--fontColorLeftNav);
   font-weight: bold;
-  border-right: 1px solid white;
   transition: background-color 0.3s;
 }
 
@@ -54,21 +60,23 @@ html, body {
   background-color: var(--buttonHoverColor);
 }
 
+a {
+  text-decoration: none;
+}
+
 /* nav-bar at the top */
 #topNav {
   border-bottom: 1px solid white;
-  height: 50px;
   width: 100%;
   line-height: 50px;
   padding: 0;
   margin: 0;
-  overflow: auto;
 }
 
 .navElem {
   border-right: 1px solid white;
+  display: inline-block;
   line-height: 50px;
-  height: 50px;
   padding: 0 10px;
   vertical-align: middle;
   float: left;
@@ -83,7 +91,7 @@ html, body {
 
 /* nav-bar on the left */
 #leftNav {
-  height: calc(100% - 102px);
+  height: 100%;
   border-right: 1px solid white;
   width: 250px;
   color: var(--fontColorLeftNav);
@@ -108,6 +116,7 @@ html, body {
   font-weight: bold;
   color: var(--sortButtonColor);
   border-bottom: 1px solid white;
+  border-top: 1px solid white;
   transition: background-color 0.4s, font-size 0.4s;
 }
 
@@ -148,10 +157,8 @@ html, body {
 /* nav-bar at the bottom */
 #bottomNav {
   border-top: 1px solid white;
-  height: 50px;
   width: 100%;
   line-height: 50px;
-  overflow: auto;
   white-space: nowrap;
 }
 
@@ -167,8 +174,8 @@ html, body {
 
 /* sorting-area */
 #content {
-  height: calc(100% - 122px);
-  width: calc(100% - 291px);
+  width: calc(100% - 40px);
+  flex: 2;
   background: #E5E5E5;
   background: linear-gradient(to bottom right, var(--contentGradientLeft), var(--contentGradientRight));
   text-align: center;
@@ -182,6 +189,7 @@ html, body {
 /* array-element */
 .arrayElem {
   background-color: var(--arrayElemColor);
+  position: relative;
   display: inline-block;
   vertical-align: top;
 }
@@ -208,6 +216,10 @@ html, body {
 
 .arrayElem.rightHalf {
   background-color: #ff5900;
+}
+
+.arrayElem:hover .elemText {
+  opacity: 1;
 }
 
 /* The slider itself */
