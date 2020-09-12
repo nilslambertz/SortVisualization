@@ -10,7 +10,7 @@ $contentPadding: 20px;
   --contentGradientRight: #B5B5B5;
   --contentShadow: #8C8C8C;
 
-  --buttonHoverColor: #1874CD;
+  --buttonHoverColor: #1874cd;
 
   --sortButtonColor: black;
 
@@ -59,8 +59,8 @@ html, body {
   height: 100%;
 }
 
-/* title area */
-#title {
+/* title & github link */
+#title, #github {
   height: 50px;
   line-height: 50px;
   text-align: center;
@@ -69,9 +69,14 @@ html, body {
   transition: background-color 0.3s;
 }
 
-#title:hover {
-  cursor: pointer;
+#title:hover, #github:hover {
   background-color: var(--buttonHoverColor);
+}
+
+#github {
+  position: absolute;
+  bottom: 0;
+  border-top: $navBorder solid white;
 }
 
 a {
@@ -106,6 +111,7 @@ a {
 /* nav-bar on the left */
 
 #leftNav {
+  position: relative;
   height: 100%;
   border-right: $navBorder solid white;
   width: 250px;

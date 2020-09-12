@@ -292,7 +292,7 @@ function changeStyle(visible) {
 		
 		// change the opacity of the buttons on the left
         for (let i of document.getElementsByClassName("leftNavElem")) {
-            if (i !== document.getElementById("sortDiv")) {
+            if (i !== document.getElementById("sortDiv") && i !== document.getElementById("title") && i !== document.getElementById("github")) {
                 i.style.opacity = "1";
                 i.style.cursor = "pointer";
             }
@@ -316,7 +316,7 @@ function changeStyle(visible) {
         speedSlider.disabled = true;
         elemSlider.disabled = true;
         for (let i of document.getElementsByClassName("leftNavElem")) {
-            if (i !== document.getElementById("sortDiv")) {
+            if (i !== document.getElementById("sortDiv") && i !== document.getElementById("title") && i !== document.getElementById("github")) {
                 i.style.opacity = "0.2";
                 i.style.cursor = "default";
             }
