@@ -3,7 +3,7 @@ Small website with different sorting-algorithms and animations, available at [so
 
 ## Current algorithms
 bogosort  
-bublesort  
+bubblesort  
 insertionsort  
 mergesort  
 quicksort
