@@ -1,71 +1,72 @@
 <!DOCTYPE html>
 <html>
-<head>
+  <head>
     <title>SortVisualization</title>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300&display=swap" rel="stylesheet">
-    <link rel="stylesheet" type="text/css" href="Style/style.css">
+    <link rel="stylesheet" type="text/css" href="Style/style.css" />
     <script src="algorithms/bogosort.js" defer></script>
     <script src="algorithms/bubblesort.js" defer></script>
     <script src="algorithms/insertionsort.js" defer></script>
     <script src="algorithms/mergesort.js" defer></script>
     <script src="algorithms/quicksort.js" defer></script>
     <script src="Scripts/script.js" defer></script>
-</head>
-    <body class="default">
-        <div id="leftNav">
-            <a href="http://www.nilslambertz.de" target="_blank"><div id="title" class="leftNavElem">
-                nilslambertz.de
-            </div></a>
-            <div class="leftNavElem notSorting" id="sortDiv">
-                sort
-            </div>
-            <div class="leftNavElem pressable" id="bogoSortDiv">
-                bogosort
-            </div>
-            <div class="leftNavElem pressable" id="bubbleSortDiv">
-                bubblesort
-            </div>
-            <div class="leftNavElem pressable" id="explosionSort">
-                explosionsort &#128165;
-            </div>
-            <div class="leftNavElem pressable" id="insertionSortDiv">
-                insertionsort
-            </div>
-            <div class="leftNavElem pressable" id="mergeSortDiv">
-                mergesort
-            </div>
-            <div class="leftNavElem pressable" id="quickSortDiv">
-                quickSort
-            </div>
-            <a href="https://github.com/nilslambertz/SortVisualization" target="_blank"><div id="github" class="leftNavElem">
-                github repo
-            </div></a>
+  </head>
+  <body class="default">
+    <div id="leftNav">
+      <a href="http://www.nilslambertz.de" target="_blank"
+        ><div id="title" class="leftNavElem">nilslambertz.de</div></a
+      >
+      <div class="leftNavElem notSorting" id="sortDiv">sort</div>
+      <div class="leftNavElem pressable" id="bogoSortDiv">bogosort</div>
+      <div class="leftNavElem pressable" id="bubbleSortDiv">bubblesort</div>
+      <div class="leftNavElem pressable" id="explosionSort">
+        explosionsort &#128165;
+      </div>
+      <div class="leftNavElem pressable" id="insertionSortDiv">
+        insertionsort
+      </div>
+      <div class="leftNavElem pressable" id="mergeSortDiv">mergesort</div>
+      <div class="leftNavElem pressable" id="quickSortDiv">quickSort</div>
+      <a
+        href="https://github.com/nilslambertz/SortVisualization"
+        target="_blank"
+        ><div id="github" class="leftNavElem">github repo</div></a
+      >
+    </div>
+
+    <div id="right">
+      <div id="topNav">
+        <div class="navElem" id="elemSliderDiv">
+          elements
+          <input
+            type="range"
+            min="5"
+            max="600"
+            value="100"
+            class="slider"
+            id="elemSlider"
+          />
+          <span id="sliderValue">100</span>
         </div>
-
-        <div id="right">
-            <div id="topNav">
-                <div class="navElem" id="elemSliderDiv">
-                    elements
-                    <input type="range" min="5" max="600" value="100" class="slider" id="elemSlider">
-                    <span id="sliderValue">100</span>
-                </div>
-                <div class="navElem" id="speedSliderDiv">
-                      <label>speed</label>
-                    <input type="range" min="10" max="1000" value="1000" class="slider" id="speedSlider">
-                </div>
-                <div class="navElem pressable" id="createArrayDiv">
-                    new array
-                </div>
-            </div>
-
-          <div id="content">
-
-          </div>
-
-          <div id="bottomNav">
-              <div class="navElem pressable" id="defaultThemeDiv">Default theme</div>
-              <div class="navElem pressable" id="darkThemeDiv">Dark theme</div>
-          </div>
+        <div class="navElem" id="speedSliderDiv">
+          <label>speed</label>
+          <input
+            type="range"
+            min="10"
+            max="1000"
+            value="1000"
+            class="slider"
+            id="speedSlider"
+          />
         </div>
-    </body>
+        <div class="navElem pressable" id="createArrayDiv">new array</div>
+      </div>
+
+      <div id="content"></div>
+
+      <div id="bottomNav">
+        <div class="navElem pressable" id="defaultThemeDiv">Default theme</div>
+        <div class="navElem pressable" id="darkThemeDiv">Dark theme</div>
+      </div>
+    </div>
+  </body>
 </html>
